@@ -7,6 +7,11 @@ define(
 			onFileReaderLoad: function(e) {
 				var contents = e.target.result;
 				alert(contents);
+
+				// Experimenting with using DOMParser to parse XML.
+				// Investigate https://developer.mozilla.org/en-US/docs/Web/API/Document/createTreeWalker
+				//
+				// TODO - investigate gpx-parse: http://www.vapidspace.com/gpx-parse/doc/index.html
 				var oParser = new DOMParser();
 				var oDOM = oParser.parseFromString(contents, "text/xml");
 				// print the name of the root element or error message
