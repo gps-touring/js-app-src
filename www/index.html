@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- title will be set from config.app.title after the javascript has been loaded. -->
+		<title>Loading ...</title>
+
+		<link rel="stylesheet" href="styles/style.css">
+		<link rel="stylesheet" href="styles/leaflet.css">
+
+
+		<!-- OPTION 1 - Load scripts before body: -->
+		<!-- data-main attribute tells require.js to load app.js after require.js loads. -->
+		<!--
+		<script data-main="app" src="lib/require.js"></script>
+		-->
+		<!-- TODO: Consider splitting the app into two modules: one to be loaded here in head, 
+		the other to be loaded after the body: -->
+	</head>
+	<body>
+		<div id="app-frame">
+			<h1 class="delete-when-loaded">Loading ...</h1>
+			<div id="map"></div>
+		</div>
+		<!-- OPTION 2 - Load scripts after body: -->
+		<!-- data-main attribute tells require.js to load app.js after require.js loads. -->
+		<script data-main="app" src="lib/require.js"></script>
+	</body>
+</html>
