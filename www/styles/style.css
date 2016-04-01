@@ -1,10 +1,16 @@
 html { height: 100% }
 body { height: 100%; margin: 0; padding: 0 }
 #app-frame {
+	position: relative;
 	width: 100%;
 	height: 100%;
 }
+#notmap {
+	position: absolute;
+	width: 300px;
+	height: 100%;
+}
 #map {
-	width: 100%;
+	margin-left: 300px;
 	height: 100%;
 }

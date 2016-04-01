@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<meta charset="UTF-8">
 		<!-- title will be set from config.app.title after the javascript has been loaded. -->
 		<title>Loading ...</title>
 
 		<link rel="stylesheet" href="styles/style.css">
 		<link rel="stylesheet" href="styles/leaflet.css">
-
 
 		<!-- OPTION 1 - Load scripts before body: -->
 		<!-- data-main attribute tells require.js to load app.js after require.js loads. -->
@@ -19,6 +19,10 @@
 	<body>
 		<div id="app-frame">
 			<h1 class="delete-when-loaded">Loading ...</h1>
+			<div id="notmap">
+				<input type="file" id="files" name="files[]" multiple />
+				<output id="list"></output>
+			</div>
 			<div id="map"></div>
 		</div>
 		<!-- OPTION 2 - Load scripts after body: -->
