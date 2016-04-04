@@ -1,7 +1,7 @@
 define([], function() {
 	"use strict";
 	var parseStr = function(xmlStr, xmlSpec) {
-		console.log("xmlParse.parseStr");
+		//console.log("xmlParse.parseStr");
 		var oParser = new DOMParser();
 		var oDOM = oParser.parseFromString(xmlStr, "application/xml");
 		var rootSpec = null;
@@ -85,8 +85,8 @@ define([], function() {
 		var name;
 		for (i = 0; i < attrs.length; ++i) {
 			name = attrs.item(i).name;
-			console.log(name);
-			console.log(attrs.item(i).value);
+			//console.log(name);
+			//console.log(attrs.item(i).value);
 			if (specAttrs[name]) {
 				// This attribute is specified in the xmlSpec, so we'll preserve it:
 				res[name] = attrs.item(i).value;
@@ -150,7 +150,7 @@ define([], function() {
 		DECIMAL: DECIMAL,
 		GYEAR: GYEAR,
 		ANYURI: ANYURI,
-		INTEGER: INTEGER
+		INTEGER: INTEGER,
 		NONNEGATIVEINTEGER: NONNEGATIVEINTEGER
 	};
 	return pub;
