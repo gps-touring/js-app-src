@@ -28,11 +28,31 @@ define([], function() {
 
 	var STRING = 1;
 	var DATETIME = 2;
+	var DECIMAL = 3;
+	var GYEAR = 4;
+	var ANYURI = 5;
+	var INTEGER = 6;
+	var NONNEGATIVEINTEGER = 7;
 	var textParser = {};
 	textParser[STRING] = function(doc) {
 		return doc.firstChild.wholeText.toString();
 	};
 	textParser[DATETIME] = function(doc) {
+		return doc.firstChild.wholeText.toString();
+	};
+	textParser[DECIMAL] = function(doc) {
+		return doc.firstChild.wholeText.toString();
+	};
+	textParser[GYEAR] = function(doc) {
+		return doc.firstChild.wholeText.toString();
+	};
+	textParser[ANYURI] = function(doc) {
+		return doc.firstChild.wholeText.toString();
+	};
+	textParser[INTEGER] = function(doc) {
+		return doc.firstChild.wholeText.toString();
+	};
+	textParser[NONNEGATIVEINTEGER] = function(doc) {
 		return doc.firstChild.wholeText.toString();
 	};
 	var parseString = function(doc, res) {
@@ -126,7 +146,12 @@ define([], function() {
 	var pub = {
 		parseStr: parseStr,
 		STRING: STRING,
-		DATETIME: DATETIME
+		DATETIME: DATETIME,
+		DECIMAL: DECIMAL,
+		GYEAR: GYEAR,
+		ANYURI: ANYURI,
+		INTEGER: INTEGER
+		NONNEGATIVEINTEGER: NONNEGATIVEINTEGER
 	};
 	return pub;
 });
