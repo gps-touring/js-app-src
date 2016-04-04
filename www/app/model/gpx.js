@@ -1,6 +1,6 @@
 define(
-	["leaflet"],
-	function(leaflet) {
+	["model/gpxParse", "gpxParse"],
+	function(gpxParse, gpxParseLib) {
 		"use strict";
 		var spec = {
 			root: {
@@ -16,8 +16,32 @@ define(
 		};
 
 		var priv = {
-			parseStr: function(str) {
-				console.log("gpx.parseStr()");
+			parseGpxStr: function(str) {
+				console.log("gpx.parseGpxStr()");
+				gpxParse.parseXmlStr(str);
+			},
+			parseGpxStrUsingGpxParseLib: function(str) {
+				console.log("gpx.parseGpxStrUsingGpxParseLib()");
+				gpxParseLib.parseGpx(str, function(error, data) {
+					if (error !== null) {
+						alert("Error parsing GPX.");
+						console.log(error);
+					}
+					else {
+						console.log(data);
+						console.log(data.waypoints);
+						console.log(data.tracks);
+						console.log(data.tracks[0].segments[0]);
+						console.log(data.tracks[0].segments[0][0]);
+						console.log(data.tracks[0].segment);
+						lat, lon, elevation, time, magvar, geoidheight, name, cmt, desc, src, links, sym, type
+						console.log(data.routes);
+					}
+				});
+				
+			},
+			parseGpxStrUsingDomParser: function(str) {
+				console.log("gpx.parseGpxStrUsingDomParser()");
 
 				// Experimenting with using DOMParser to parse XML.
 				// Investigate https://developer.mozilla.org/en-US/docs/Web/API/Document/createTreeWalker
@@ -72,7 +96,9 @@ define(
 			}
 		};
 		var pub = {
-			parseStr: priv.parseStr
+			parseGpxStr: priv.parseGpxStr,
+			parseGpxStrUsingGpxParseLib: priv.parseGpxStrUsingGpxParseLib,
+			parseGpxStrUsingDomParser: priv.parseGpxStrUsingDomParser
 		};
 		return pub;
 	});

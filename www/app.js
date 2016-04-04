@@ -36,7 +36,8 @@ requirejs.config({
 
 		// If we want to load D3 from a local source:
 		//d3: "d3.v3.min"
-		leaflet: "leaflet"
+		leaflet: "leaflet",
+		gpxParse: "gpx-parse-browser"
     }
 });
 

@@ -6,8 +6,8 @@ define(
 		var priv = {
 			onFileReaderLoad: function(e) {
 				var contents = e.target.result;
-				alert(contents);
-				gpx.parseStr(contents);
+				//alert(contents);
+				gpx.parseGpxStr(contents);
 			},
 			init: function() {
 				// Code copied from http://www.html5rocks.com/en/tutorials/file/dndfiles/
