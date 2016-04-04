@@ -1,32 +1,13 @@
 define(
-	[],
-	function() {
+	["model/gpx"],
+	function(gpx) {
 		"use strict";
 
 		var priv = {
 			onFileReaderLoad: function(e) {
 				var contents = e.target.result;
 				alert(contents);
-
-				// Experimenting with using DOMParser to parse XML.
-				// Investigate https://developer.mozilla.org/en-US/docs/Web/API/Document/createTreeWalker
-				//
-				// TODO - investigate gpx-parse: http://www.vapidspace.com/gpx-parse/doc/index.html
-				var oParser = new DOMParser();
-				var oDOM = oParser.parseFromString(contents, "text/xml");
-				// print the name of the root element or error message
-				if (oDOM.documentElement.nodeName == "parsererror") {
-				   console.log("error while parsing tex/xml");
-				}
-				else {
-					console.log(oDOM.documentElement.nodeName);
-					var x = oDOM.documentElement.childNodes;
-					var i = 0;
-					for (i = 0; i < x.length ;i++) {
-						console.log(x[i].nodeName);
-						//txt += x[i].nodeName + ": " + x[i].childNodes[0].nodeValue + "<br>";
-					}
-				}
+				gpx.parseStr(contents);
 			},
 			init: function() {
 				// Code copied from http://www.html5rocks.com/en/tutorials/file/dndfiles/
