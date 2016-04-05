@@ -1,22 +1,18 @@
 define(["model/xmlParse"], function(xmlParse) {
 	"use strict";
 	var xmlSpec = {
+		// This spec is derived from http://www.topografix.com/GPX/1/1/
+		// TODO - validation based on specs at the above URL. e.g. ranges of validity.
+		// TODO - it feels like attrs are specified in the wrong place - they should be with their types.
+		//        e.g. specify the attributes of <gpx> with the gpxType.
 		root: {
-			gpx: {
-				attrs: {
-					version: {},
-					creator: {}
-				},
-				type: "gpxType",
-				min: 1, max: 1
-			}
+			gpx: { attrs: { xmlns: {}, version: {}, creator: {} }, type: "gpxType", min: 1, max: 1 }
 		},
 		gpxType: {
 			metadata: {min: 0, max: 1, type: "metadataType"},
 			wpt: {attrs: {lat: {}, lon: {} }, type: "wptType", min: 0, max: undefined},
 			rte: {type: "rteType", min: 0, max: undefined},
 			trk: {type: "trkType", min: 0, max: undefined}
-			
 		},
 		metadataType: {
 			name: {type: xmlParse.STRING, min: 0, max: 1},
