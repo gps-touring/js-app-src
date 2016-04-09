@@ -4,6 +4,11 @@ define([], function() {
 		var oParser = new DOMParser();
 		var oDOM = oParser.parseFromString(xmlStr, "application/xml");
 		var rootSpec = null;
+		var specErrors = xmlSpecErrors(xmlSpec);
+		var i;
+		for (i = 0; i < specErrors.length; ++i) {
+			console.log("XML spec error: " + specErrors[i]);
+		}
 		// print the name of the root element or error message
 		if (oDOM.documentElement.nodeName == "parsererror") {
 			console.log("error while parsing application/xml");
@@ -14,12 +19,31 @@ define([], function() {
 			// (usually there will be just one specified there):
 			rootSpec = xmlSpec.root[oDOM.documentElement.nodeName];
 			if (!rootSpec) {
-				colsole.log("Unexpected root element: " + dDOM.documentElement.nodeName);
+				console.log("Unexpected root element: " + dDOM.documentElement.nodeName);
 			}
 			else {
 				return parseElement(oDOM.documentElement, xmlSpec, rootSpec);
 			}
 		}
+	};
+	// Returns array of error messages - empty if error-free. 
+	var xmlSpecErrors = function(xmlSpec) {
+		var keys = Object.keys(xmlSpec);
+		var i;
+		var xmlType;
+		var n;
+		var errors = [];
+		for (i = 0; i < keys.length; ++i) {
+			xmlType = keys[i];
+			n = xmlType.elements ? 1 : 0;
+			n += xmlType.text ? 1 : 0;
+			// type must have either elements or text, but not both.
+			if (n > 1) {
+				errors.push(xmlType + " must not have both 'elements' and 'text' properties.");
+			}	
+			// TODO - make sure no attrs and elements have same name.
+		}
+		return errors;
 	};
 
 	var STRING = 1;
@@ -54,24 +78,16 @@ define([], function() {
 		return doc.firstChild.wholeText.toString();
 	};
 	var parseElement = function(doc, xmlSpec, elementSpec) {
-		var res;
-		var attrs = elementSpec.attrs ? parseAttributes(doc, elementSpec.attrs) : null;
-		var childElements = xmlSpec[elementSpec.type] ? parseType(doc, xmlSpec, elementSpec.type) : null;
-		var text = textParser[elementSpec.type] ? textParser[elementSpec.type](doc) : null;
-
-		// TODO - handle case where text and attrs are both not null e.g.<e a="1">string</e>
-		if (text !== null) {
-			res = text;
+		if (textParser[elementSpec.type]) {
+			return textParser[elementSpec.type](doc);
 		}
-		else if (attrs || childElements) {
-			// TODO: Check that attrs and childElements have no names in common.
-			// Merge attrs and childElements:
-			res = Object.assign(attrs || {}, childElements || {});
+		else if (xmlSpec[elementSpec.type]) {
+			return parseType(doc, xmlSpec, elementSpec.type);
 		}
 		else {
 			console.log("No spec found for " + elementSpec.type);
 		}
-		return res;
+		return null;
 	};
 	var parseAttributes = function(doc, specAttrs) {
 		// returns an object {name: value, ...}, including only those names in the spec.
@@ -97,22 +113,24 @@ define([], function() {
 		// returns an Object {tagname: thing, ...} including only those tagnames that appear as elements in the typeSpec.
 		// where thing is an array if tagname can appear more than once.
 		var typeSpec = xmlSpec[type];
-		var res = {};
 		var children = doc.childNodes;
 		var i;
 		var tagName, tags;
+		var attrs = typeSpec.attrs ? parseAttributes(doc, typeSpec.attrs) : {};
+		var elements = {}
+
 		for (i = 0; i < children.length; ++i) {
-			//console.log(children[i].nodeName);
 			//console.log(children[i].nodeValue);
 			//console.log(children[i].nodeType);
 			switch (children[i].nodeType) {
 				case Node.ELEMENT_NODE:
 					tagName = children[i].nodeName;
-					if (typeSpec[tagName]) {
-						if (!res[tagName]) {
-							res[tagName] = [];
+					if (typeSpec.elements && typeSpec.elements[tagName]) {
+						//console.log(children[i].nodeName);
+						if (!elements[tagName]) {
+							elements[tagName] = [];
 						}
-						res[tagName].push(parseElement(children[i], xmlSpec, typeSpec[tagName]));
+						elements[tagName].push(parseElement(children[i], xmlSpec, typeSpec.elements[tagName]));
 					}
 					else {
 						console.log("Ignoring element not in xmlSpec: " + tagName);
@@ -130,15 +148,15 @@ define([], function() {
 			}
 		}
 		// Convert arrays of values back into single strings, when max number of them is 1:
-		tags = Object.keys(res);
+		tags = Object.keys(elements);
 		// TODO: Validate min and max number of each tag: typeSpec[tags[i]].min and typeSpec[tags[i]].max
 		for (i = 0; i < tags.length; ++i) {
-			if (typeSpec[tags[i]].max === 1) {
-				res[tags[i]] = res[tags[i]][0];
+			if (typeSpec.elements && typeSpec.elements[tags[i]].max === 1) {
+				elements[tags[i]] = elements[tags[i]][0];
 			}
 		}
 
-		return res;
+		return Object.assign(attrs, elements);
 	};
 	var pub = {
 		parseStr: parseStr,
