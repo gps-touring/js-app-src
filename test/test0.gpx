@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<gpx creator="GPS Visualizer http://www.gpsvisualizer.com/" version="1.1" xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+<wpt lat="44.08959" lon="6.85351">
+  <ele>792.3</ele>
+  <name>Place de Provence/D2202</name>
+</wpt>
+<wpt lat="43.75317" lon="7.16108">
+  <ele>372.5</ele>
+  <name>Chemin des Sausses</name>
+</wpt>
+<trk>
+  <name>Place de Provence/D2202 - Chemin des Sausses</name>
+  <trkseg>
+    <trkpt lat="44.08959" lon="6.85351">
+      <ele>792.3</ele>
+    </trkpt>
+    <trkpt lat="44.08818" lon="6.85382">
+      <ele>789.5</ele>
+    </trkpt>
+    <trkpt lat="43.75182" lon="7.15882">
+      <ele>378.0</ele>
+	  <magvar>700.0</magvar>
+    </trkpt>
+    <trkpt lat="43.75292" lon="7.16074">
+      <ele>371.6</ele>
+    </trkpt>
+    <trkpt lat="43.75317" lon="7.16108">
+      <ele>372.5</ele>
+    </trkpt>
+  </trkseg>
+</trk>
+</gpx>
