@@ -77,32 +77,25 @@ define([], function() {
 	textParser[NONNEGATIVEINTEGER] = function(text) {
 		return text;
 	};
-	var parseElement = function(doc, xmlSpec, elementSpec) {
-		if (textParser[elementSpec.type]) {
-			return parseText(doc.firstChild.wholeText.toString(), elementSpec);
-			//return textParser[elementSpec.type](doc.firstChild.wholeText.toString());
-		}
-		else 
-			if (xmlSpec[elementSpec.type]) {
-			return parseType(doc, xmlSpec, xmlSpec[elementSpec.type]);
-		}
-		else {
-			console.log("No spec found for " + elementSpec.type);
-		}
-		return null;
-	};
 	var parseText = function(text, spec) {
 		var type = spec.type || STRING;
+		var res = text;	// By default, we just return the text.
 		if (textParser[type]) {
-			return textParser[type](text);
+			res = textParser[type](text);
 		}
 		else if (spec.type) {
-			return parseText(text, spec.type);
+			res = parseText(text, spec.type);
 		}
 		else {
 			console.log("parseText: unknown text type: " + type);
 		}
-		return text;
+		if (res != null && spec.validator) {
+			console.log("Running validator");
+			if (!spec.validator(res)) {
+				console.log("Failed validation: " + text);
+			}
+		}
+		return res;
 	};
 	var parseAttributes = function(doc, specAttrs) {
 		// returns an object {name: value, ...}, including only those names in the spec.
@@ -124,6 +117,18 @@ define([], function() {
 		}
 		return res;
 	}
+	var parseElement = function(doc, xmlSpec, elementSpec) {
+		if (textParser[elementSpec.type]) {
+			return parseText(doc.firstChild.wholeText.toString(), elementSpec);
+		}
+		else if (xmlSpec[elementSpec.type]) {
+			return parseType(doc, xmlSpec, xmlSpec[elementSpec.type]);
+		}
+		else {
+			console.log("No spec found for " + elementSpec.type);
+		}
+		return null;
+	};
 	var parseType = function(doc, xmlSpec, typeSpec) {
 		// returns an Object {tagname: thing, ...} including only those tagnames that appear as elements in the typeSpec.
 		// where thing is an array if tagname can appear more than once.

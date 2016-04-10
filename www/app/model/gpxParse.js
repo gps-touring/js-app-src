@@ -95,7 +95,8 @@ define(["model/xmlParse"], function(xmlParse) {
 			type: xmlParse.DECIMAL
 		},
 		degreesType: {
-			type: xmlParse.DECIMAL
+			type: xmlParse.DECIMAL,
+			validator: function(x) { return x >= 0.0 && x < 360.0; }
 		},
 		copyrightType: {
 			attrs: {
