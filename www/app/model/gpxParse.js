@@ -32,13 +32,13 @@ define(["model/xmlParse"], function(xmlParse) {
 		},
 		wptType: {
 			attrs: {
-				lat: {},
+				lat: {type: "latitudeType"},
 				lon: {}
 			}, 
 			elements: {
 				ele: {type: xmlParse.DECIMAL, min: 0, max: 1},
 				time: {type: xmlParse.DATETIME, min: 0, max: 1},
-				magvar: {type: xmlParse.DECIMAL, min: 0, max: 1},
+				magvar: {type: "degreesType", min: 0, max: 1},
 				geoidheight: {type: xmlParse.DECIMAL, min: 0, max: 1},
 				name: {type: xmlParse.STRING, min: 0, max: 1},
 				cmt: {type: xmlParse.STRING, min: 0, max: 1},
@@ -90,6 +90,12 @@ define(["model/xmlParse"], function(xmlParse) {
 				trkpt: {type: "wptType", min: 0, max: undefined},
 				extensions: {type: "extensionsType", min: 0, max: 1}
 			}
+		},
+		latitudeType: {
+			type: xmlParse.DECIMAL
+		},
+		degreesType: {
+			type: xmlParse.DECIMAL
 		},
 		copyrightType: {
 			attrs: {

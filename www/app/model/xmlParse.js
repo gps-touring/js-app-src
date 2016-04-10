@@ -56,38 +56,53 @@ define([], function() {
 	var textParser = {};
 	// TODO - validation, and (maybe) conversion to Number when appropriate.
 	//        Proper validation means that parameters need to be passed in, and extension of the xmlSpec object.
-	textParser[STRING] = function(doc) {
-		return doc.firstChild.wholeText.toString();
+	textParser[STRING] = function(text) {
+		return text;
 	};
-	textParser[DATETIME] = function(doc) {
-		return doc.firstChild.wholeText.toString();
+	textParser[DATETIME] = function(text) {
+		return text;
 	};
-	textParser[DECIMAL] = function(doc) {
-		return doc.firstChild.wholeText.toString();
+	textParser[DECIMAL] = function(text) {
+		return text;
 	};
-	textParser[GYEAR] = function(doc) {
-		return doc.firstChild.wholeText.toString();
+	textParser[GYEAR] = function(text) {
+		return text;
 	};
-	textParser[ANYURI] = function(doc) {
-		return doc.firstChild.wholeText.toString();
+	textParser[ANYURI] = function(text) {
+		return text;
 	};
-	textParser[INTEGER] = function(doc) {
-		return doc.firstChild.wholeText.toString();
+	textParser[INTEGER] = function(text) {
+		return text;
 	};
-	textParser[NONNEGATIVEINTEGER] = function(doc) {
-		return doc.firstChild.wholeText.toString();
+	textParser[NONNEGATIVEINTEGER] = function(text) {
+		return text;
 	};
 	var parseElement = function(doc, xmlSpec, elementSpec) {
 		if (textParser[elementSpec.type]) {
-			return textParser[elementSpec.type](doc);
+			return parseText(doc.firstChild.wholeText.toString(), elementSpec);
+			//return textParser[elementSpec.type](doc.firstChild.wholeText.toString());
 		}
-		else if (xmlSpec[elementSpec.type]) {
-			return parseType(doc, xmlSpec, elementSpec.type);
+		else 
+			if (xmlSpec[elementSpec.type]) {
+			return parseType(doc, xmlSpec, xmlSpec[elementSpec.type]);
 		}
 		else {
 			console.log("No spec found for " + elementSpec.type);
 		}
 		return null;
+	};
+	var parseText = function(text, spec) {
+		var type = spec.type || STRING;
+		if (textParser[type]) {
+			return textParser[type](text);
+		}
+		else if (spec.type) {
+			return parseText(text, spec.type);
+		}
+		else {
+			console.log("parseText: unknown text type: " + type);
+		}
+		return text;
 	};
 	var parseAttributes = function(doc, specAttrs) {
 		// returns an object {name: value, ...}, including only those names in the spec.
@@ -101,7 +116,7 @@ define([], function() {
 			//console.log(attrs.item(i).value);
 			if (specAttrs[name]) {
 				// This attribute is specified in the xmlSpec, so we'll preserve it:
-				res[name] = attrs.item(i).value;
+				res[name] = parseText(attrs.item(i).value, specAttrs[name]);
 			}
 			else {
 				console.log("Attribute of element <" + doc.nodeName + "> not found in spec, and so ignored: " + name + "=\"" + attrs.item(i).value + "\"");
@@ -109,15 +124,15 @@ define([], function() {
 		}
 		return res;
 	}
-	var parseType = function(doc, xmlSpec, type) {
+	var parseType = function(doc, xmlSpec, typeSpec) {
 		// returns an Object {tagname: thing, ...} including only those tagnames that appear as elements in the typeSpec.
 		// where thing is an array if tagname can appear more than once.
-		var typeSpec = xmlSpec[type];
 		var children = doc.childNodes;
 		var i;
 		var tagName, tags;
 		var attrs = typeSpec.attrs ? parseAttributes(doc, typeSpec.attrs) : {};
-		var elements = {}
+		var elements = {};
+		var text = [];
 
 		for (i = 0; i < children.length; ++i) {
 			//console.log(children[i].nodeValue);
@@ -137,8 +152,13 @@ define([], function() {
 					}
 				break;
 				case Node.TEXT_NODE:
-					// We don't bother to report that we've found whitespace text nodes.
-					if (children[i].wholeText.toString().trim().length > 0) {
+					if (textParser[typeSpec.type]) {
+						// TODO - if this is ever called, we nee to do somethng with var text.
+						console.log("TEXT_NODE: IS THIS EVER CALLED????? !!!!!!!!!!!!!!");
+						text.push(parseText(children[i].wholeText.toString(), typeSpec ));
+					}
+					else if (children[i].wholeText.toString().trim().length > 0) {
+						// We don't bother to report that we've found whitespace text nodes.
 						console.log("Unexpected TEXT_NODE: " + children[i].nodeValue + ": " + children[i].wholeText.toString());
 					}
 					break;
@@ -156,6 +176,7 @@ define([], function() {
 			}
 		}
 
+		// Merge attrs and elements into one object:
 		return Object.assign(attrs, elements);
 	};
 	var pub = {
