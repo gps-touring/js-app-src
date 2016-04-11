@@ -28,6 +28,8 @@ requirejs.config({
 		// Unfortunately this approach does not work, which is why we're pulling in all of lodash, above.
 		//postal: "postal.lodash.min",
 		//postal: "https://cdnjs.cloudflare.com/ajax/libs/postal.js/1.0.7/postal.min",
+		postal: "postal.min",
+		lodash: "lodash.core",
 
 		// In order to allow requireJs to have dependencies on JSON files, we need to pull in the require/json plugin:
 		//json: "require/json",

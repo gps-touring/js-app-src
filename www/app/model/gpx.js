@@ -4,7 +4,7 @@ define(
 		"use strict";
 		var priv = {
 			parseGpxStr: function(str) {
-				gpxParse.parseXmlStr(str);
+				return gpxParse.parseXmlStr(str);
 			}
 		};
 		var pub = {

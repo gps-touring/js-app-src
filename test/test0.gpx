@@ -1,32 +1,69 @@
 <?xml version="1.0"?>
 <gpx creator="GPS Visualizer http://www.gpsvisualizer.com/" version="1.1" xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
-<wpt lat="44.08959" lon="6.85351">
-  <ele>792.3</ele>
-  <name>Place de Provence/D2202</name>
-</wpt>
-<wpt lat="43.75317" lon="7.16108">
-  <ele>372.5</ele>
-  <name>Chemin des Sausses</name>
-</wpt>
-<trk>
-  <name>Place de Provence/D2202 - Chemin des Sausses</name>
-  <trkseg>
-    <trkpt lat="44.08959" lon="6.85351">
-      <ele>792.3</ele>
-    </trkpt>
-    <trkpt lat="44.08818" lon="6.85382">
-      <ele>789.5</ele>
-    </trkpt>
-    <trkpt lat="43.75182" lon="7.15882">
-      <ele>378.0</ele>
-	  <magvar>700.0</magvar>
-    </trkpt>
-    <trkpt lat="43.75292" lon="7.16074">
-      <ele>371.6</ele>
-    </trkpt>
-    <trkpt lat="43.75317" lon="7.16108">
-      <ele>372.5</ele>
-    </trkpt>
-  </trkseg>
-</trk>
+	<wpt lat="44.08959" lon="6.85351">
+		<ele>792.3</ele>
+		<name>Place de Provence/D2202</name>
+	</wpt>
+	<wpt lat="43.75317" lon="7.16108">
+		<ele>372.5</ele>
+		<name>Chemin des Sausses</name>
+	</wpt>
+	<trk>
+		<name>Place de Provence/D2202 - Chemin des Sausses</name>
+		<trkseg>
+			<trkpt lat="44.08959" lon="6.95351">
+				<ele>792.3</ele>
+			</trkpt>
+			<trkpt lat="44.08818" lon="6.95382">
+				<ele>789.5</ele>
+			</trkpt>
+			<trkpt lat="43.75182" lon="7.25882">
+				<ele>378.0</ele>
+				<magvar>700.0</magvar>
+			</trkpt>
+			<trkpt lat="43.75292" lon="7.26074">
+				<ele>371.6</ele>
+			</trkpt>
+			<trkpt lat="43.75317" lon="7.26108">
+				<ele>372.5</ele>
+			</trkpt>
+		</trkseg>
+		<trkseg>
+			<trkpt lat="44.08959" lon="6.85351">
+				<ele>792.3</ele>
+			</trkpt>
+			<trkpt lat="44.08818" lon="6.85382">
+				<ele>789.5</ele>
+			</trkpt>
+			<trkpt lat="43.75182" lon="7.15882">
+				<ele>378.0</ele>
+				<magvar>700.0</magvar>
+			</trkpt>
+			<trkpt lat="43.75292" lon="7.16074">
+				<ele>371.6</ele>
+			</trkpt>
+			<trkpt lat="43.75317" lon="7.16108">
+				<ele>372.5</ele>
+			</trkpt>
+		</trkseg>
+	</trk>
+	<rte>
+		<name>Patrick's Route</name>
+		<rtept lon="9.860624216140083" lat="54.9328621088893">
+			<ele>0.0</ele>
+			<name>Position 1</name>
+		</rtept>
+		<rtept lon="9.86092208681491" lat="54.93293237320851">
+			<ele>0.0</ele>
+			<name>Position 2</name>
+		</rtept>
+		<rtept lon="9.86187816543752" lat="54.93327743521187">
+			<ele>0.0</ele>
+			<name>Position 3</name>
+		</rtept>
+		<rtept lon="9.862439849679859" lat="54.93342326167919">
+			<ele>0.0</ele>
+			<name>Position 4</name>
+		</rtept>
+	</rte>
 </gpx>

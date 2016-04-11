@@ -1,11 +1,13 @@
 define(
-	["leaflet"],
-	function(leaflet) {
+	["leaflet", "presenter/map"],
+	function(leaflet, presenter) {
 		"use strict";
 
+		var settings;
+		var mymap;
 		var priv = {
 			init: function() {
-				var mymap = leaflet.map("map", {
+				mymap = leaflet.map("map", {
 					center: [51.505, -0.09],
 					zoom: 13
 				});
@@ -15,8 +17,15 @@ define(
 				}).addTo(mymap);
 			}
 		};
+		function showLatLngs(latlngs) {
+			var polyline = leaflet.polyline(latlngs, {color: "red"}).addTo(mymap);
+			// zoom the map to the polyline
+			mymap.fitBounds(polyline.getBounds());
+		}
 		var pub = {
-			init: priv.init
+			init: priv.init,
+			showLatLngs: showLatLngs
 		};
+		settings = presenter.registerView(pub);
 		return pub;
 	});

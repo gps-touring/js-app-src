@@ -183,6 +183,7 @@ define([], function() {
 				return parseElement(oDOM.documentElement, xmlSpec, rootSpec);
 			}
 		}
+		return null;
 	};
 
 	var pub = {
