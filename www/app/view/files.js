@@ -14,14 +14,13 @@ define(
 			init: function() {
 				// Code copied from http://www.html5rocks.com/en/tutorials/file/dndfiles/
 				//
-				// Check for the various File API support.
-				if (window.File && window.FileReader && window.FileList && window.Blob) {
-					// Great success! All the File APIs are supported.
 					function handleFileSelect(evt) {
 						var files = evt.target.files; // FileList object
 						// files is a FileList of File objects. List some properties.
 						var output = [];
-						for (var i = 0, f; f = files[i]; i++) {
+						var i, f;
+						for (i = 0; i < files.length; i++) {
+							f = files[i];
 							var reader = new FileReader();
 							reader.onload = priv.onFileReaderLoad(f);
 							output.push("<li><strong>", escape(f.name), "</strong> (", f.type || "n/a", ") - ",
@@ -32,6 +31,9 @@ define(
 						}
 						document.getElementById("list").innerHTML = "<ul>" + output.join("") + "</ul>";
 					}
+				// Check for the various File API support.
+				if (window.File && window.FileReader && window.FileList && window.Blob) {
+					// Great success! All the File APIs are supported.
 					document.getElementById("files").addEventListener("change", handleFileSelect, false);
 				} else {
 					alert("The File APIs are not fully supported in this browser.");

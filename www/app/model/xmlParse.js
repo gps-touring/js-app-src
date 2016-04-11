@@ -1,32 +1,6 @@
 define([], function() {
 	"use strict";
-	var parseStr = function(xmlStr, xmlSpec) {
-		var oParser = new DOMParser();
-		var oDOM = oParser.parseFromString(xmlStr, "application/xml");
-		var rootSpec = null;
-		var specErrors = xmlSpecErrors(xmlSpec);
-		var i;
-		for (i = 0; i < specErrors.length; ++i) {
-			console.log("XML spec error: " + specErrors[i]);
-		}
-		// print the name of the root element or error message
-		if (oDOM.documentElement.nodeName == "parsererror") {
-			console.log("error while parsing application/xml");
-			// TODO error reporting.
-		}
-		else {
-			// Check that the root element is one of those specified in xmlSpec.root
-			// (usually there will be just one specified there):
-			rootSpec = xmlSpec.root[oDOM.documentElement.nodeName];
-			if (!rootSpec) {
-				console.log("Unexpected root element: " + dDOM.documentElement.nodeName);
-			}
-			else {
-				return parseElement(oDOM.documentElement, xmlSpec, rootSpec);
-			}
-		}
-	};
-	// Returns array of error messages - empty if error-free. 
+	// Returns array of error messages - empty if error-free.
 	var xmlSpecErrors = function(xmlSpec) {
 		var keys = Object.keys(xmlSpec);
 		var i;
@@ -40,12 +14,11 @@ define([], function() {
 			// type must have either elements or text, but not both.
 			if (n > 1) {
 				errors.push(xmlType + " must not have both 'elements' and 'text' properties.");
-			}	
+			}
 			// TODO - make sure no attrs and elements have same name.
 		}
 		return errors;
 	};
-
 	var STRING = 1;
 	var DATETIME = 2;
 	var DECIMAL = 3;
@@ -116,18 +89,6 @@ define([], function() {
 			}
 		}
 		return res;
-	}
-	var parseElement = function(doc, xmlSpec, elementSpec) {
-		if (textParser[elementSpec.type]) {
-			return parseText(doc.firstChild.wholeText.toString(), elementSpec);
-		}
-		else if (xmlSpec[elementSpec.type]) {
-			return parseType(doc, xmlSpec, xmlSpec[elementSpec.type]);
-		}
-		else {
-			console.log("No spec found for " + elementSpec.type);
-		}
-		return null;
 	};
 	var parseType = function(doc, xmlSpec, typeSpec) {
 		// returns an Object {tagname: thing, ...} including only those tagnames that appear as elements in the typeSpec.
@@ -150,7 +111,8 @@ define([], function() {
 						if (!elements[tagName]) {
 							elements[tagName] = [];
 						}
-						elements[tagName].push(parseElement(children[i], xmlSpec, typeSpec.elements[tagName]));
+						// Recursive calling structure, hence the suppression of elint warning.
+						elements[tagName].push(parseElement(children[i], xmlSpec, typeSpec.elements[tagName]));	//eslint-disable-line no-use-before-define
 					}
 					else {
 						console.log("Ignoring element not in xmlSpec: " + tagName);
@@ -184,6 +146,45 @@ define([], function() {
 		// Merge attrs and elements into one object:
 		return Object.assign(attrs, elements);
 	};
+	var parseElement = function(doc, xmlSpec, elementSpec) {
+		if (textParser[elementSpec.type]) {
+			return parseText(doc.firstChild.wholeText.toString(), elementSpec);
+		}
+		else if (xmlSpec[elementSpec.type]) {
+			return parseType(doc, xmlSpec, xmlSpec[elementSpec.type]);
+		}
+		else {
+			console.log("No spec found for " + elementSpec.type);
+		}
+		return null;
+	};
+	var parseStr = function(xmlStr, xmlSpec) {
+		var oParser = new DOMParser();
+		var oDOM = oParser.parseFromString(xmlStr, "application/xml");
+		var rootSpec = null;
+		var specErrors = xmlSpecErrors(xmlSpec);
+		var i;
+		for (i = 0; i < specErrors.length; ++i) {
+			console.log("XML spec error: " + specErrors[i]);
+		}
+		// print the name of the root element or error message
+		if (oDOM.documentElement.nodeName === "parsererror") {
+			console.log("error while parsing application/xml");
+			// TODO error reporting.
+		}
+		else {
+			// Check that the root element is one of those specified in xmlSpec.root
+			// (usually there will be just one specified there):
+			rootSpec = xmlSpec.root[oDOM.documentElement.nodeName];
+			if (!rootSpec) {
+				console.log("Unexpected root element: " + oDOM.documentElement.nodeName);
+			}
+			else {
+				return parseElement(oDOM.documentElement, xmlSpec, rootSpec);
+			}
+		}
+	};
+
 	var pub = {
 		parseStr: parseStr,
 		STRING: STRING,

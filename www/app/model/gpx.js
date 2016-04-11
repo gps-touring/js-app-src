@@ -1,6 +1,6 @@
 define(
-	["model/gpxParse", "gpxParse"],
-	function(gpxParse, gpxParseLib) {
+	["model/gpxParse"],
+	function(gpxParse) {
 		"use strict";
 		var priv = {
 			parseGpxStr: function(str) {

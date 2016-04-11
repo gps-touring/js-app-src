@@ -34,7 +34,7 @@ define(["model/xmlParse"], function(xmlParse) {
 			attrs: {
 				lat: {type: "latitudeType"},
 				lon: {}
-			}, 
+			},
 			elements: {
 				ele: {type: xmlParse.DECIMAL, min: 0, max: 1},
 				time: {type: xmlParse.DATETIME, min: 0, max: 1},
@@ -101,10 +101,10 @@ define(["model/xmlParse"], function(xmlParse) {
 		copyrightType: {
 			attrs: {
 				author: {}
-			}, 
+			},
 			elements: {
 				year: {type: xmlParse.GYEAR, min: 0, max: 1},
-				license: {type: xmlParse.ANYURI, min: 0, max: 1},
+				license: {type: xmlParse.ANYURI, min: 0, max: 1}
 			}
 		},
 		linkType: {
@@ -120,7 +120,7 @@ define(["model/xmlParse"], function(xmlParse) {
 			attrs: {
 				id: {},
 				domain: {}
-			} 
+			}
 		},
 		personType: {
 			elements: {
@@ -133,7 +133,7 @@ define(["model/xmlParse"], function(xmlParse) {
 			attrs: {
 				lat: {},
 				lon: {}
-			}, 
+			},
 			elements: {
 				ele: {type: xmlParse.DECIMAL, min: 0, max: 1},
 				time: {type: xmlParse.DATETIME, min: 0, max: 1}
@@ -150,13 +150,12 @@ define(["model/xmlParse"], function(xmlParse) {
 				minlon: {},
 				maxlat: {},
 				maxlon: {}
-			} 
+			}
 		}
-
 	};
 	var parseXmlStr = function(str) {
-		var res = xmlParse.parseStr(str, xmlSpec)
-			console.log(res);
+		var res = xmlParse.parseStr(str, xmlSpec);
+		console.log(res);
 	};
 	var pub = {
 		parseXmlStr: parseXmlStr
