@@ -1,13 +1,15 @@
 define(
-	["model/gpx"],
-	function(gpx) {
+	["presenter/files"],
+	function(presenter) {
 		"use strict";
 
 		var priv = {
-			onFileReaderLoad: function(e) {
-				var contents = e.target.result;
-				//alert(contents);
-				gpx.parseGpxStr(contents);
+			onFileReaderLoad: function(file) {
+				return function(e) {
+					var contents = e.target.result;
+					//alert(contents);
+					presenter.loadGpxFile(file, contents);
+				};
 			},
 			init: function() {
 				// Code copied from http://www.html5rocks.com/en/tutorials/file/dndfiles/
@@ -21,7 +23,7 @@ define(
 						var output = [];
 						for (var i = 0, f; f = files[i]; i++) {
 							var reader = new FileReader();
-							reader.onload = priv.onFileReaderLoad;
+							reader.onload = priv.onFileReaderLoad(f);
 							output.push("<li><strong>", escape(f.name), "</strong> (", f.type || "n/a", ") - ",
 										f.size, " bytes, last modified: ",
 										f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : "n/a",
