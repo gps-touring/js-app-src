@@ -11,13 +11,13 @@ define(["leaflet", "app/eventbus"], function(leaflet, eventbus) {
 		var i, j;
 		var seq = data.waypointSequence;
 		var latLngs = [];
-		console.log(seq.length);
+		//console.log(seq.length);
 		for (j = 0; j < seq.length; ++j) {
-			console.log(seq.item(j));
+			//console.log(seq.item(j));
 			latLngs.push(leaflet.latLng(seq.item(j).lat, seq.item(j).lon));
 		}
 		for (i = 0; i < views.length; ++i) {
-			views[i].showLatLngs(latLngs);
+			views[i].showLatLngs(latLngs, "green", seq.eventHandlers);
 		}
 	}
 	function init() {

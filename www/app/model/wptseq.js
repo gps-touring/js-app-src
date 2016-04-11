@@ -21,6 +21,11 @@ define( ["model/gpx", "app/eventbus"], function(gpx, eventbus) {
 		this.item = function(i) {
 			return this.seq[i];
 		};
+		this.eventHandlers = {
+			click: function(e) { console.log("WaypointSequence clicked"); },
+			mouseover: function(e) { console.log("WaypointSequence mouseover"); }
+
+		};
 	};
 	var store = {
 		wptsSeqs: []

@@ -5,6 +5,7 @@ define(
 
 		var settings;
 		var mymap;
+		var keepCurrentView = false; 	// because it is initally set to by the system, not the user.
 		var priv = {
 			init: function() {
 				mymap = leaflet.map("map", {
@@ -17,10 +18,24 @@ define(
 				}).addTo(mymap);
 			}
 		};
-		function showLatLngs(latlngs) {
-			var polyline = leaflet.polyline(latlngs, {color: "red"}).addTo(mymap);
+		function showLatLngs(latlngs, colour, eventHandlers) {
+			var polyline = leaflet.polyline(latlngs, {color: colour}).addTo(mymap);
+			var bounds = polyline.getBounds();
+			var i;
+			// Add the event handlers that are defined in model/wptseq:
+			var evs = Object.keys(eventHandlers);
+			for (i = 0; i < evs.length; ++i) {
+				polyline.on(evs[i], eventHandlers[evs[i]]);
+			}
 			// zoom the map to the polyline
-			mymap.fitBounds(polyline.getBounds());
+			if (keepCurrentView) {
+				bounds.extend(mymap.getBounds());
+			}
+			else {
+				// Subsequent displays will keep what's already displayed in view.
+				keepCurrentView = true;
+			}
+			mymap.fitBounds(bounds);
 		}
 		var pub = {
 			init: priv.init,
