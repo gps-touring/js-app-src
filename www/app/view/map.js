@@ -1,11 +1,10 @@
 define(
-	["leaflet", "presenter/map"],
-	function(leaflet, presenter) {
+	["leaflet", "presenter/map", "view/map/wptseq"],
+	function(leaflet, presenter, wptseqView) {
 		"use strict";
 
 		var settings;
 		var mymap;
-		var keepCurrentView = false; 	// because it is initally set to by the system, not the user.
 		var priv = {
 			init: function() {
 				mymap = leaflet.map("map", {
@@ -18,28 +17,12 @@ define(
 				}).addTo(mymap);
 			}
 		};
-		function showLatLngs(latlngs, eventHandlers, className) {
-			var polyline = leaflet.polyline(latlngs, {className: className}).addTo(mymap);
-			var bounds = polyline.getBounds();
-			var i;
-			// Add the event handlers that are defined in model/wptseq:
-			var evs = Object.keys(eventHandlers);
-			for (i = 0; i < evs.length; ++i) {
-				polyline.on(evs[i], eventHandlers[evs[i]]);
-			}
-			// zoom the map to the polyline
-			if (keepCurrentView) {
-				bounds.extend(mymap.getBounds());
-			}
-			else {
-				// Subsequent displays will keep what's already displayed in view.
-				keepCurrentView = true;
-			}
-			mymap.fitBounds(bounds);
+		function addWaypointSequence(latlngs, eventHandlers, className) {
+			return new wptseqView.WaypointSequence(mymap, latlngs, eventHandlers, className);
 		}
 		var pub = {
 			init: priv.init,
-			showLatLngs: showLatLngs
+			addWaypointSequence: addWaypointSequence
 		};
 		settings = presenter.registerView(pub);
 		return pub;

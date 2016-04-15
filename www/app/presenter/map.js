@@ -6,8 +6,42 @@ define(["leaflet", "app/eventbus"], function(leaflet, eventbus) {
 		views.push(v);
 		return { };	// return settings
 	}
+	// See
+	// http://leafletjs.com/reference.html#events
+	// http://leafletjs.com/reference.html#event-objects
+	// http://leafletjs.com/reference.html#path - the Event types are defined here.
+	var eventHandlers = {
+		// We need to keep the reference to each waypintSequence (in the model)
+		// within (as a closure) each event handler we create:
+		click: function(wptseq) {
+			return function(e) {
+				console.log("WaypointSequence click: " + e.latlng);
+				wptseq.setSelected(true);
+			};
+		},
+		mouseover: function(wptseq) {
+			return function(e) {
+				//console.log("WaypointSequence mouseover: " + e.latlng);
+				wptseq.setHovered(true);
+			};
+		},
+		mouseout: function(wptseq) {
+			return function(e) {
+				//console.log("WaypointSequence mouseout: " + e.latlng);
+				wptseq.setHovered(false);
+			};
+		}
+	};
+	function createEventHandlers(wptseq) {
+		var res = {};
+		var i, keys = Object.keys(eventHandlers);
+		for (i = 0; i < keys.length; ++i) {
+			res[keys[i]] = eventHandlers[keys[i]](wptseq);
+		}
+		return res;
+	}
 	function onNewWaypointSequence(data/*, envelope*/) {
-		console.log("onNewWaypointSequence");
+		//console.log("onNewWaypointSequence");
 		var i, j;
 		var seq = data.waypointSequence;
 		var latLngs = [];
@@ -19,22 +53,15 @@ define(["leaflet", "app/eventbus"], function(leaflet, eventbus) {
 		for (i = 0; i < views.length; ++i) {
 			// Here, we register the model's eventHandlers with each view. If the model changes state
 			// as a result of handling these events, we will pick up those state changes in onWaypointSequenceStateChange.
-			views[i].showLatLngs(latLngs, seq.eventHandlers, "route");
+			seq.setUserData({mapView: views[i].addWaypointSequence(latLngs, createEventHandlers(seq))});
 		}
 	}
 	function onWaypointSequenceStateChange(data/*, envelope*/) {
-		console.log("onWaypointSequenceStateChange");
-		//console.log(data.event.target);
-		// The path.setStyle({className approach is fundamentally broken!
-		// See https://github.com/Leaflet/Leaflet/issues/2662
-		// In particular, it does not work after the Path has been added to the map.
-		//data.event.target.setStyle({className: data.state.hovered ? "route-hovered" : "route"});
+		//console.log("onWaypointSequenceStateChange");
 
-		// And alternative approach (hack) is to use the non-API _path property to manimulate the DOM directly:
-		leaflet.DomUtil.removeClass(data.event.target._path, "route");
-		leaflet.DomUtil.removeClass(data.event.target._path, "route-hovered");
-		leaflet.DomUtil.addClass(data.event.target._path, data.state.hovered ? "route-hovered" : "route");
-		//console.log(data.event.target._path.classList);
+		if (data.state.hovered !== undefined) {
+			data.waypointSequence.userdata.mapView.showHovered(data.state.hovered);
+		}
 	}
 	function init() {
 		eventbus.subscribe({topic: "WaypointSequence.new", callback: onNewWaypointSequence});
