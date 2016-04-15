@@ -25,12 +25,6 @@ define( ["model/gpx", "app/eventbus"], function(gpx, eventbus) {
 		//console.log("model/wptseq/WaypointSequence:");
 		//console.log(this.seq);
 
-		/*
-		this.toLatLngs = function() {
-			var res = [];
-			return res;
-		};
-	   */
 		this.length = this.seq.length;
 		this.item = function(i) {
 			return this.seq[i];
@@ -41,25 +35,27 @@ define( ["model/gpx", "app/eventbus"], function(gpx, eventbus) {
 				data: {
 					waypointSequence: this,
 					userdata: this.userdata,
-					state: {hovered: isIt}
+					state: {hovered: isIt, selected: this.selected}
 				}
 			});
 		};
 		this.setSelected = function (isIt) {
 			if (this.selected !== isIt) {
-				deselectAllWaypointSequences();
+				if (isIt) {
+					deselectAllWaypointSequences();
+				}
 				this.selected = isIt;
 				eventbus.publish({
 					topic: "WaypointSequence.stateChange",
 					data: {
 						waypointSequence: this,
-						//userdata: this.userdata,
-						state: {selected: isIt}
+						state: {selected: this.selected}
 					}
 				});
 			}
 		};
 	};
+	// TODO - make the above methods of WaypointSequence use the prototype mechanism, below.
 	WaypointSequence.prototype.setUserData = function(userdata) {
 		this.userdata = userdata;
 	};

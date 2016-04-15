@@ -16,18 +16,21 @@ define(["leaflet", "app/eventbus"], function(leaflet, eventbus) {
 		click: function(wptseq) {
 			return function(e) {
 				console.log("WaypointSequence click: " + e.latlng);
+				// Tell the model to do something:
 				wptseq.setSelected(true);
 			};
 		},
 		mouseover: function(wptseq) {
 			return function(e) {
 				//console.log("WaypointSequence mouseover: " + e.latlng);
+				// Tell the model to do something:
 				wptseq.setHovered(true);
 			};
 		},
 		mouseout: function(wptseq) {
 			return function(e) {
 				//console.log("WaypointSequence mouseout: " + e.latlng);
+				// Tell the model to do something:
 				wptseq.setHovered(false);
 			};
 		}
@@ -47,11 +50,10 @@ define(["leaflet", "app/eventbus"], function(leaflet, eventbus) {
 		var latLngs = [];
 		//console.log(seq.length);
 		for (j = 0; j < seq.length; ++j) {
-			//console.log(seq.item(j));
 			latLngs.push(leaflet.latLng(seq.item(j).lat, seq.item(j).lon));
 		}
 		for (i = 0; i < views.length; ++i) {
-			// Here, we register the model's eventHandlers with each view. If the model changes state
+			// Here, we register eventHandlers with each view. If the model changes state
 			// as a result of handling these events, we will pick up those state changes in onWaypointSequenceStateChange.
 			seq.setUserData({mapView: views[i].addWaypointSequence(latLngs, createEventHandlers(seq))});
 		}
@@ -59,9 +61,7 @@ define(["leaflet", "app/eventbus"], function(leaflet, eventbus) {
 	function onWaypointSequenceStateChange(data/*, envelope*/) {
 		//console.log("onWaypointSequenceStateChange");
 
-		if (data.state.hovered !== undefined) {
-			data.waypointSequence.userdata.mapView.showHovered(data.state.hovered);
-		}
+		data.waypointSequence.userdata.mapView.showState(data.state);
 	}
 	function init() {
 		eventbus.subscribe({topic: "WaypointSequence.new", callback: onNewWaypointSequence});
