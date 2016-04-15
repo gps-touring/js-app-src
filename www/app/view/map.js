@@ -18,8 +18,8 @@ define(
 				}).addTo(mymap);
 			}
 		};
-		function showLatLngs(latlngs, colour, eventHandlers) {
-			var polyline = leaflet.polyline(latlngs, {color: colour}).addTo(mymap);
+		function showLatLngs(latlngs, eventHandlers, className) {
+			var polyline = leaflet.polyline(latlngs, {className: className}).addTo(mymap);
 			var bounds = polyline.getBounds();
 			var i;
 			// Add the event handlers that are defined in model/wptseq:

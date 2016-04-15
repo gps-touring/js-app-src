@@ -21,9 +21,34 @@ define( ["model/gpx", "app/eventbus"], function(gpx, eventbus) {
 		this.item = function(i) {
 			return this.seq[i];
 		};
+		// See
+		// http://leafletjs.com/reference.html#events
+		// http://leafletjs.com/reference.html#event-objects
+		// http://leafletjs.com/reference.html#path - the Event types are defined here.
 		this.eventHandlers = {
-			click: function(e) { console.log("WaypointSequence clicked"); },
-			mouseover: function(e) { console.log("WaypointSequence mouseover"); }
+			click: function(e) { console.log("WaypointSequence clicked: " + e.latlng); },
+			mouseover: function(e) {
+				console.log("WaypointSequence mouseover: " + e.latlng);
+				eventbus.publish({
+					topic: "WaypointSequence.stateChange",
+					data: {
+						waypointSequence: this,
+						event: e,
+						state: {hovered: true}
+					}
+				});
+			},
+			mouseout: function(e) {
+				console.log("WaypointSequence mouseout: " + e.latlng);
+				eventbus.publish({
+					topic: "WaypointSequence.stateChange",
+					data: {
+						waypointSequence: this,
+						event: e,
+						state: {hovered: false}
+					}
+				});
+			}
 
 		};
 	};
