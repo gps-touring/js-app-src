@@ -1,6 +1,6 @@
 define(
-	["leaflet", "presenter/map", "view/map/wptseq"],
-	function(leaflet, presenter, wptseqView) {
+	["leaflet", "leaflet.contextmenu", "presenter/map", "view/map/wptseq", "view/map/marker"],
+	function(leaflet, contextmenu, presenter, wptseqView, markerView) {
 		"use strict";
 
 		var settings;
@@ -10,6 +10,9 @@ define(
 				var i, eventHandlers = presenter.getMapEventHandlers();
 				var k = Object.keys(eventHandlers);
 				map = leaflet.map("map", {
+					contextmenu: true,
+					contextmenuWidth: 140,
+					contextmenuItems: presenter.getContextmenuItems(),
 					center: [51.505, -0.09],
 					zoom: 13
 				});
@@ -27,9 +30,13 @@ define(
 		function addWaypointSequence(latlngs, eventHandlers, className) {
 			return new wptseqView.WaypointSequence(map, latlngs, eventHandlers, className);
 		}
+		function addMarker(latlng, options, eventHandlers) {
+			return new markerView.Marker(map, latlng, options, eventHandlers);
+		}
 		var pub = {
 			init: priv.init,
-			addWaypointSequence: addWaypointSequence
+			addWaypointSequence: addWaypointSequence,
+			addMarker: addMarker
 		};
 		settings = presenter.registerView(pub);
 		return pub;
