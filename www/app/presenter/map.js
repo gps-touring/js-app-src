@@ -6,6 +6,11 @@ define(["app/eventbus", "presenter/map/wptseq"], function(eventbus, wptseqPresen
 		views.push(v);
 		return { };	// return settings
 	}
+	function getMapEventHandlers() {
+		return {
+			click: function(e) { console.log("Map clicked"); }
+		};
+	}
 	function onNewWaypointSequence(data/*, envelope*/) {
 		//console.log("onNewWaypointSequence");
 		var i;
@@ -27,7 +32,8 @@ define(["app/eventbus", "presenter/map/wptseq"], function(eventbus, wptseqPresen
 		eventbus.subscribe({topic: "WaypointSequence.stateChange", callback: onWaypointSequenceStateChange});
 	}
 	var pub = {
-		registerView: registerView
+		registerView: registerView,
+		getMapEventHandlers: getMapEventHandlers
 	};
 	init();
 	return pub;
