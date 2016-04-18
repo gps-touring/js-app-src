@@ -1,4 +1,4 @@
-define( ["model/gpx", "app/eventbus"], function(gpx, eventbus) {
+define( ["model/gpx", "model/userdata", "app/eventbus"], function(gpx, userdata, eventbus) {
 	"use strict";
 
 	var store = {
@@ -7,7 +7,7 @@ define( ["model/gpx", "app/eventbus"], function(gpx, eventbus) {
 	function deselectAllWaypointSequences() {
 		var i;
 		for (i = 0; i < store.wptsSeqs.length; ++i) {
-			store.wptsSeqs[i].setSelected(false, store.wptsSeqs[i].userdata);
+			store.wptsSeqs[i].setSelected(false);
 		}
 	}
 
@@ -34,7 +34,6 @@ define( ["model/gpx", "app/eventbus"], function(gpx, eventbus) {
 				topic: "WaypointSequence.stateChange",
 				data: {
 					waypointSequence: this,
-					userdata: this.userdata,
 					state: {hovered: isIt, selected: this.selected}
 				}
 			});
@@ -56,9 +55,8 @@ define( ["model/gpx", "app/eventbus"], function(gpx, eventbus) {
 		};
 	};
 	// TODO - make the above methods of WaypointSequence use the prototype mechanism, below.
-	WaypointSequence.prototype.setUserData = function(userdata) {
-		this.userdata = userdata;
-	};
+	WaypointSequence.prototype.setUserData = userdata.setUserData;
+	WaypointSequence.prototype.getUserData = userdata.getUserData;
 
 	var addFromGpx = function(file, gpxData) {
 		var i, wptseqs = gpxData.getWaypointSequences();

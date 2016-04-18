@@ -9,8 +9,12 @@ define(["app/eventbus", "model/points", "presenter/map/wptseq"], function(eventb
 	function getContextmenuItems() {
 		return [
 			{
-				text: "Start from",
-				callback: function(e) { pointModel.setStart(e.latlng.lat, e.latlng.lng); console.log("Start from" + e.latlng); }
+				text: "Route from here",
+				callback: function(e) { pointModel.setStart(e.latlng.lat, e.latlng.lng); }
+			},
+			{
+				text: "Route to here",
+				callback: function(e) { pointModel.setFinish(e.latlng.lat, e.latlng.lng); }
 			}
 		];
 	}
@@ -25,25 +29,32 @@ define(["app/eventbus", "model/points", "presenter/map/wptseq"], function(eventb
 		var latLngs = wptseqPresenter.toLeafletLatLngs(seq);
 		// Here, we register eventHandlers with each view. If the model changes state
 		// as a result of handling these events, we will pick up those state changes in onWaypointSequenceStateChange.
-		seq.setUserData({mapView: view.addWaypointSequence(latLngs, wptseqPresenter.createEventHandlers(seq))});
+		seq.setUserData("mapView", view.addWaypointSequence(latLngs, wptseqPresenter.createEventHandlers(seq)));
 	}
 	function onWaypointSequenceStateChange(data/*, envelope*/) {
 		//console.log("onWaypointSequenceStateChange");
 
-		data.waypointSequence.userdata.mapView.showState(data.state);
+		data.waypointSequence.getUserData("mapView").showState(data.state);
 	}
-	function onPointAddStart(data/*, envelope*/) {
+	function addMarkerToView(data, options) {
 		var pt = data.point;
 		var latlng = [pt.lat, pt.lng];	// Understood by Leaflet.
 		// options properties are the options avaiable for Leaflet.awesome-markers.
 		// See https://github.com/lvoogdt/Leaflet.awesome-markers
-		var options = {icon: "play", markerColor: "green"};
 		var eventHandlers = {};
-		pt.setUserData({mapView: view.addMarker(latlng, options, eventHandlers)});
+		pt.setUserData("mapView", view.addMarker(latlng, options, eventHandlers));
 	}
-	function onPointRemoveStart(data/*, envelope*/) {
-		var pt = data.point;
-		//pt.setUserData({mapView: view.addMarker(latlng)});
+	function removeMarkerFromView(data) {
+		data.point.getUserData("mapView").destroy();
+	}
+	function onPointAddStart(data/*, envelope*/) {
+		addMarkerToView(data, {icon: "play", markerColor: "green"});
+	}
+	function onPointAddFinish(data/*, envelope*/) {
+		addMarkerToView(data, {icon: "stop", markerColor: "red"});
+	}
+	function onPointRemove(data/*, envelope*/) {
+		removeMarkerFromView(data);
 	}
 
 	function init() {
@@ -51,7 +62,8 @@ define(["app/eventbus", "model/points", "presenter/map/wptseq"], function(eventb
 		eventbus.subscribe({topic: "WaypointSequence.new", callback: onNewWaypointSequence});
 		eventbus.subscribe({topic: "WaypointSequence.stateChange", callback: onWaypointSequenceStateChange});
 		eventbus.subscribe({topic: "Point.addStart", callback: onPointAddStart});
-		eventbus.subscribe({topic: "Point.removeStart", callback: onPointRemoveStart});
+		eventbus.subscribe({topic: "Point.addFinish", callback: onPointAddFinish});
+		eventbus.subscribe({topic: "Point.remove", callback: onPointRemove});
 	}
 	var pub = {
 		registerView: registerView,

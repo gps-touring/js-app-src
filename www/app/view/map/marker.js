@@ -11,6 +11,7 @@ define(["leaflet", "leafletAwesomeMarkers"], function(leaflet, awesomeMarkers) {
 		var opts = Object.assign(dfltOptions, options);
 		var i;
 		var redMarker = leaflet.AwesomeMarkers.icon(opts);
+		this.map = map;
 		this.marker = leaflet.marker(latlng, {icon: redMarker}).addTo(map);
 		// Add the event handlers that are defined in model/wptseq:
 		var evs = Object.keys(eventHandlers);
@@ -18,6 +19,9 @@ define(["leaflet", "leafletAwesomeMarkers"], function(leaflet, awesomeMarkers) {
 			this.marker.on(evs[i], eventHandlers[evs[i]]);
 		}
 	}
+	Marker.prototype.destroy = function() {
+		this.map.removeLayer(this.marker);
+	};
 
 	var pub = {
 		Marker: Marker
