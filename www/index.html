@@ -5,6 +5,7 @@
 		<!-- title will be set from config.app.title after the javascript has been loaded. -->
 		<title>Loading ...</title>
 
+		<link rel="stylesheet" href="styles/panes.css">
 		<link rel="stylesheet" href="styles/style.css">
 		<link rel="stylesheet" href="styles/leaflet.css">
 		<link rel="stylesheet" href="styles/leaflet.contextmenu.css">
@@ -20,13 +21,27 @@
 		the other to be loaded after the body: -->
 	</head>
 	<body>
-		<div id="app-frame">
-			<h1 class="delete-when-loaded">Loading ...</h1>
-			<div id="notmap">
+        <div class="left col">
+            <div class="header row">
+                Navigation
+            </div>
+            <div class="body row scroll-y">
 				<input type="file" id="files" name="files[]" multiple />
 				<output id="list"></output>
 			</div>
-			<div id="map"></div>
+			<div class="footer row">
+                Icons go here
+            </div>
+		</div>
+        <div class="right col">
+            <div class="header row">
+                View or edit something
+            </div>
+            <div class="body row scroll-y" id="map">
+			</div>
+			<div class="footer row">
+                Icons go here
+            </div>
 		</div>
 		<!-- OPTION 2 - Load scripts after body: -->
 		<!-- data-main attribute tells require.js to load app.js after require.js loads. -->
