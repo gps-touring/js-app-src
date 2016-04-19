@@ -15,6 +15,16 @@ define(["app/eventbus", "model/points", "presenter/map/wptseq"], function(eventb
 			{
 				text: "Route to here",
 				callback: function(e) { pointModel.setFinish(e.latlng.lat, e.latlng.lng); }
+			},
+			{
+				text: "Launch Google maps",
+				callback: function(e) {
+					// TODO Consider matching Google maps' zoom level with the current view.
+					var zoom = 14;
+					var url = "https://www.google.co.uk/maps/@" + e.latlng.lat.toFixed(7) + "," + e.latlng.lng.toFixed(7) + "," + zoom + "z";
+					console.log(url);
+					window.open(url, "_blank");
+				}
 			}
 		];
 	}
