@@ -24,7 +24,8 @@
         <div class="left col">
             <div class="header row" id="menubar"></div>
             <div class="body row scroll-y">
-				<input type="file" id="files" name="files[]" multiple />
+				<!-- Not displayed, as it is clicked from javascript when the "Import GPX" menu item is chosen: -->
+				<input type="file" id="files" name="files[]" multiple style="display:none"/>
 				<output id="list"></output>
 			</div>
 			<div class="footer row">

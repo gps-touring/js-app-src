@@ -11,7 +11,17 @@ define( [], function() {
 					items: [
 						{
 							text: "Import GPX",
-							click: function() { console.log("Import GPX");}
+							click: function() {
+								// Find and click the hidden <input> element.
+								var inputElem = document.getElementById("files");
+								if (inputElem) {
+									inputElem.click();
+								}
+							}
+						},
+						{
+							text: "Download zip",
+							click: function() { console.log("Download zip");}
 						}
 					]
 				},
