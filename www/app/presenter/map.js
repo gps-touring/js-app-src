@@ -34,7 +34,7 @@ define(["app/eventbus", "model/points", "presenter/map/wptseq"], function(eventb
 					];
 					var url = "https://www.google.co.uk/maps?" + params.join("&");
 
-					// This version of the URL also works (and is more modern?). 
+					// This version of the URL also works (and is more modern?).
 					// But I have not worked out how to specify a terrain map, nor markers.
 					//var zoom = 14;
 					//var url = "https://www.google.co.uk/maps/@" + e.latlng.lat.toFixed(7) + "," + e.latlng.lng.toFixed(7) + "," + zoom + "z";

@@ -1,6 +1,7 @@
 /* Taken from http://stevesanderson.github.io/fixed-height-layouts-demo/two-columns.html, 
  * an example from the article 
- * http://blog.stevensanderson.com/2011/10/05/full-height-app-layouts-a-css-trick-to-make-it-easier/
+ * http://blog.stevensanderson.com/2011/10/05/full-height-app-layouts-a-css-trick-to-make-it-easier/.
+ * This file is from http://stevesanderson.github.io/fixed-height-layouts-demo/css/panes.css.
  */
 /* Generic pane rules */
 body { margin: 0; -webkit-text-size-adjust: 100%; }
