@@ -11,7 +11,7 @@ define( ["model/gpx", "model/userdata", "app/eventbus"], function(gpx, userdata,
 		}
 	}
 
-	// A Sequence of waypoints is a core part of the model: it is what defined a section of a route.
+	// A Sequence of waypoints is a core part of the model: it is what defines a section of a route.
 
 	var WaypointSequence = function(theSource, theSeq) {
 		this.source = theSource;
@@ -22,39 +22,36 @@ define( ["model/gpx", "model/userdata", "app/eventbus"], function(gpx, userdata,
 		// for lat, long, ele, etc.
 		// TODO - specify this interface more precisely.
 		this.seq = theSeq;
-		//console.log("model/wptseq/WaypointSequence:");
-		//console.log(this.seq);
 
 		this.length = this.seq.length;
 		this.item = function(i) {
 			return this.seq[i];
 		};
-		this.setHovered = function (isIt) {
+	};
+	WaypointSequence.prototype.setSelected = function (isIt) {
+		if (this.selected !== isIt) {
+			if (isIt) {
+				deselectAllWaypointSequences();
+			}
+			this.selected = isIt;
 			eventbus.publish({
 				topic: "WaypointSequence.stateChange",
 				data: {
 					waypointSequence: this,
-					state: {hovered: isIt, selected: this.selected}
+					state: {selected: this.selected}
 				}
 			});
-		};
-		this.setSelected = function (isIt) {
-			if (this.selected !== isIt) {
-				if (isIt) {
-					deselectAllWaypointSequences();
-				}
-				this.selected = isIt;
-				eventbus.publish({
-					topic: "WaypointSequence.stateChange",
-					data: {
-						waypointSequence: this,
-						state: {selected: this.selected}
-					}
-				});
-			}
-		};
+		}
 	};
-	// TODO - make the above methods of WaypointSequence use the prototype mechanism, below.
+	WaypointSequence.prototype.setHovered = function (isIt) {
+		eventbus.publish({
+			topic: "WaypointSequence.stateChange",
+			data: {
+				waypointSequence: this,
+				state: {hovered: isIt, selected: this.selected}
+			}
+		});
+	};
 	WaypointSequence.prototype.setUserData = userdata.setUserData;
 	WaypointSequence.prototype.getUserData = userdata.getUserData;
 

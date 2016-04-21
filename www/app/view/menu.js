@@ -4,7 +4,6 @@ define( ["d3", "presenter/menu"], function(d3, presenter) {
 	var settings;
 	var priv = {
 		init: function() {
-			console.log(settings.menus);
 			var i, j, selection;
 			for (i = 0; i < settings.menus.length; ++i) {
 				selection = d3.select("#menubar").append("div").classed({dropdown: true})
