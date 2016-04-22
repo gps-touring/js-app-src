@@ -9,6 +9,7 @@ define(
 			init: function() {
 				var i, eventHandlers = presenter.getMapEventHandlers();
 				var k = Object.keys(eventHandlers);
+				// For the contextmenu docs, see https://github.com/aratcliffe/Leaflet.contextmenu.
 				map = leaflet.map("map", {
 					contextmenu: true,
 					contextmenuWidth: 140,
