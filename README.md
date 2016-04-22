@@ -1,4 +1,9 @@
 # js-app-src
+
+This application helps me to plan cycle tours. :-)
+
+**Under construction!**
+
 Source for the gps-touring javascript application.
 
 This source will be constructed into a javascript application using require.js. 
