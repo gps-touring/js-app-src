@@ -24,16 +24,21 @@ define(["leaflet"], function(leaflet) {
 		map.fitBounds(bounds);
 	}
 	WaypointSequence.prototype.showState = function(state) {
+		// state is an Object whose keys are CSS class names, and whose values are boolean.
+		// e.g. {selected: true, hovered: false}
+
 		// The path.setStyle({className approach is fundamentally broken!
 		// See https://github.com/Leaflet/Leaflet/issues/2662
 		// An alternative approach (hack) is to use the non-API _path property to manipulate the DOM directly:
-		leaflet.DomUtil.removeClass(this.polyline._path, "route");
-		leaflet.DomUtil.removeClass(this.polyline._path, "route-hovered");
-		leaflet.DomUtil.removeClass(this.polyline._path, "route-selected");
-		leaflet.DomUtil.addClass(this.polyline._path, state.selected ? "route-selected" : "route");
-		//if (!state.selected) {
-			leaflet.DomUtil.addClass(this.polyline._path, state.hovered ? "route-hovered" : "route");
-		//}
+		var i, keys = Object.keys(state);
+		for (i = 0; i < keys.length; ++i) {
+			if (state[keys[i]] && !leaflet.DomUtil.hasClass(this.polyline._path, keys[i])) {
+				leaflet.DomUtil.addClass(this.polyline._path, keys[i]);
+			}
+			if (!state[keys[i]] && leaflet.DomUtil.hasClass(this.polyline._path, keys[i])) {
+				leaflet.DomUtil.removeClass(this.polyline._path, keys[i]);
+			}
+		}
 	};
 
 	var pub = {

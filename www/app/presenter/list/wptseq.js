@@ -13,7 +13,7 @@ define(["app/eventbus", "model/wptseq"], function(eventbus, wptseqModel) {
 		view.refresh(wptseqModel.getAllWaypointSequences());
 	}
 	function onWaypointSequenceStateChange(data/*, envelope*/) {
-		console.log("wptseqList: onWaypointSequenceStateChange");
+		//console.log("wptseqList: onWaypointSequenceStateChange");
 		view.showState(data.waypointSequence, data.state);
 	}
 
