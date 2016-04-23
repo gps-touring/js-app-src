@@ -165,7 +165,7 @@ define(["model/xmlParse"], function(xmlParse) {
 		this.gpx = parsedGpx;
 		this.getWaypointSequences = function() {
 			var i, j, res = [];
-			console.log(this.gpx);
+			// console.log(this.gpx);
 			// Sequences of Waypoints can come from gpx/trk/trkseg ...
 			if (this.gpx.trk) {
 				for (i = 0; i < this.gpx.trk.length; ++i) {
@@ -190,7 +190,7 @@ define(["model/xmlParse"], function(xmlParse) {
 
 	var parseXmlStr = function(str) {
 		var res = xmlParse.parseStr(str, xmlSpec);
-		console.log(res);
+		// console.log(res);
 		if (res !== null) {
 			return new GpxObject(res);
 		}

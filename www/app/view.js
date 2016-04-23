@@ -1,7 +1,7 @@
 // This is the place where the various views are pulled into the application.
 define(
-	["d3", "view/files", "view/map", "view/menu"],
-	function(d3, files, map, menu) {	//eslint-disable-line no-unused-vars
+	["d3", "view/files", "view/map", "view/menu", "view/list/wptseq"],
+	function(d3, files, map, menu, list) {	//eslint-disable-line no-unused-vars
 		"use strict";
 
 		var priv = {
@@ -11,6 +11,7 @@ define(
 				files.init();
 				map.init();
 				menu.init();
+				list.init();
 			}
 		};
 		var pub = {

@@ -8,10 +8,9 @@ define( ["model/gpx", "model/wptseq"], function(gpx, wptseq) {
 	}
 	var loadGpxFile = function(file, contents) {
 		console.log("presenter/files: " + file.name);
-		var res = gpx.parseGpxStr(contents);
-		if (res !== null) {
-			wptseq.addFromGpx(file, res);
-			//mapView.showLatLngSeq(wptseq.toLatLngs());
+		var gpxData = gpx.parseGpxStr(contents);
+		if (gpxData !== null) {
+			wptseq.addFromGpx(file, gpxData);
 		}
 	};
 
