@@ -24,23 +24,23 @@ body { height: 100%; margin: 0; padding: 0 }
 	stroke: #216500;
 }
 .route.selected {
-	stroke: yellow;
+	stroke: #EE2100;
 }
 tr.selected {
-	background-color: yellow;
+	background-color: #EE2100;
 }
 .route.hovered {
-	stroke: #9E7C09;
+	stroke: #20EE00;
 }
 tr.hovered {
-	background-color: #9E7C09;
+	background-color: #20EE00;
 }
 /* Both selected and hovered: */
 .route.selected.hovered {
-	stroke: blue;
+	stroke: #0040EE;
 }
 tr.selected.hovered {
-	background-color: blue;
+	background-color: #0040EE;
 }
 
 #menubar {
