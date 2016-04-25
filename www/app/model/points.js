@@ -3,24 +3,16 @@ define( ["model/point", "app/eventbus"], function(point, eventbus) {
 
 	var store = {
 	};
-	function setStart(lat, lng) {
-		if (store.start) {
-			eventbus.publish({topic: "Point.remove", data: {point: store.start}});
+	function setMarker(lat, lng, markerName, markerOptions) {
+		if (store[markerName]) {
+			eventbus.publish({topic: "Point.remove", data: {point: store[markerName]}});
 		}
-		store.start = new point.Point(lat, lng);
-		eventbus.publish({topic: "Point.addStart", data: {point: store.start}});
-	}
-	function setFinish(lat, lng) {
-		if (store.finish) {
-			eventbus.publish({topic: "Point.remove", data: {point: store.finish}});
-		}
-		store.finish = new point.Point(lat, lng);
-		eventbus.publish({topic: "Point.addFinish", data: {point: store.finish}});
+		store[markerName] = new point.Point(lat, lng);
+		eventbus.publish({topic: "Point.add", data: {point: store[markerName], options: markerOptions}});
 	}
 
 	var pub = {
-		setStart: setStart,
-		setFinish: setFinish
+		setMarker: setMarker
 	};
 	return pub;
 });

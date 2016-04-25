@@ -10,11 +10,15 @@ define(["app/eventbus", "model/points", "presenter/map/wptseq"], function(eventb
 		return [
 			{
 				text: "Route from here",
-				callback: function(e) { pointModel.setStart(e.latlng.lat, e.latlng.lng); }
+				callback: function(e) {
+					pointModel.setMarker(e.latlng.lat, e.latlng.lng, "routeStart", {icon: "play", markerColor: "green"});
+				}
 			},
 			{
 				text: "Route to here",
-				callback: function(e) { pointModel.setFinish(e.latlng.lat, e.latlng.lng); }
+				callback: function(e) {
+					pointModel.setMarker(e.latlng.lat, e.latlng.lng, "routeFinish", {icon: "stop", markerColor: "red"});
+				}
 			},
 			{
 				text: "Launch Google maps",
@@ -62,33 +66,23 @@ define(["app/eventbus", "model/points", "presenter/map/wptseq"], function(eventb
 
 		data.waypointSequence.getUserData("mapView").showState(data.state);
 	}
-	function addMarkerToView(data, options) {
+	function onPointAdd(data/*, envelope*/) {
 		var pt = data.point;
 		var latlng = [pt.lat, pt.lng];	// Understood by Leaflet.
 		// options properties are the options avaiable for Leaflet.awesome-markers.
 		// See https://github.com/lvoogdt/Leaflet.awesome-markers
 		var eventHandlers = {};
-		pt.userdata.mapView = view.addMarker(latlng, options, eventHandlers);
-	}
-	function removeMarkerFromView(data) {
-		data.point.userdata.mapView.destroy();
-	}
-	function onPointAddStart(data/*, envelope*/) {
-		addMarkerToView(data, {icon: "play", markerColor: "green"});
-	}
-	function onPointAddFinish(data/*, envelope*/) {
-		addMarkerToView(data, {icon: "stop", markerColor: "red"});
+		pt.userdata.mapView = view.addMarker(latlng, data.options, eventHandlers);
 	}
 	function onPointRemove(data/*, envelope*/) {
-		removeMarkerFromView(data);
+		data.point.userdata.mapView.destroy();
 	}
 
 	function init() {
 		// subscribe to events published by the model:
 		eventbus.subscribe({topic: "WaypointSequence.new", callback: onNewWaypointSequence});
 		eventbus.subscribe({topic: "WaypointSequence.stateChange", callback: onWaypointSequenceStateChange});
-		eventbus.subscribe({topic: "Point.addStart", callback: onPointAddStart});
-		eventbus.subscribe({topic: "Point.addFinish", callback: onPointAddFinish});
+		eventbus.subscribe({topic: "Point.add", callback: onPointAdd});
 		eventbus.subscribe({topic: "Point.remove", callback: onPointRemove});
 	}
 	var pub = {
