@@ -3,8 +3,7 @@ define(["model/xmlParse"], function(xmlParse) {
 	var xmlSpec = {
 		// This spec is derived from http://www.topografix.com/GPX/1/1/
 		// TODO - validation based on specs at the above URL. e.g. ranges of validity.
-		// TODO - it feels like attrs are specified in the wrong place - they should be with their types.
-		//        e.g. specify the attributes of <gpx> with the gpxType.
+		//        some here have been done, some not.
 		root: {
 			gpx: { type: "gpxType", min: 1, max: 1 }
 		},
@@ -153,54 +152,12 @@ define(["model/xmlParse"], function(xmlParse) {
 			}
 		}
 	};
-	//var WaypointSequence = function(wpts) {
-		//this.wpts = wpts;
-		//this.length = function() {
-			//return wpts.length;
-		//};
-	//};
-
-	// We define a GpxObject in order to associate some methods with the parsedGpx:
-	var GpxObject = function(parsedGpx) {
-		this.gpx = parsedGpx;
-		this.getWaypointSequences = function() {
-			var i, j, res = [];
-			// console.log(this.gpx);
-			// Sequences of Waypoints can come from gpx/trk/trkseg ...
-			if (this.gpx.trk) {
-				for (i = 0; i < this.gpx.trk.length; ++i) {
-					if (this.gpx.trk[i].trkseg) {
-						for (j = 0; j < this.gpx.trk[i].trkseg.length; ++j) {
-							//res.push(new WaypointSequence(this.gpx.trk[i].trkseg[j].trkpt));
-							res.push(this.gpx.trk[i].trkseg[j].trkpt);
-						}
-					}
-				}
-			}
-			// ... or from gpx/rte
-			if (this.gpx.rte) {
-				for (i = 0; i < this.gpx.rte.length; ++i) {
-					//res.push(new WaypointSequence(this.gpx.rte[i].rtept));
-					res.push(this.gpx.rte[i].rtept);
-				}
-			}
-			return res;
-		};
-	};
 
 	var parseXmlStr = function(str) {
-		var res = xmlParse.parseStr(str, xmlSpec);
-		// console.log(res);
-		if (res !== null) {
-			return new GpxObject(res);
-		}
-		return res;
-	};
-	var init = function() {
+		return xmlParse.parseStr(str, xmlSpec);
 	};
 	var pub = {
 		parseXmlStr: parseXmlStr
 	};
-	init();
 	return pub;
 });
