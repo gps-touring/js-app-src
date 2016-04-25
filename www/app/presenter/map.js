@@ -1,4 +1,4 @@
-define(["app/eventbus", "model/points", "presenter/map/wptseq"], function(eventbus, pointModel, wptseqPresenter) {
+define(["app/eventbus", "model/markers", "presenter/map/wptseq"], function(eventbus, markerModel, wptseqPresenter) {
 	"use strict";
 
 	var view;
@@ -11,13 +11,13 @@ define(["app/eventbus", "model/points", "presenter/map/wptseq"], function(eventb
 			{
 				text: "Route from here",
 				callback: function(e) {
-					pointModel.setMarker(e.latlng.lat, e.latlng.lng, "routeStart", {icon: "play", markerColor: "green"});
+					markerModel.setMarker(e.latlng.lat, e.latlng.lng, "routeStart", {icon: "play", markerColor: "green"});
 				}
 			},
 			{
 				text: "Route to here",
 				callback: function(e) {
-					pointModel.setMarker(e.latlng.lat, e.latlng.lng, "routeFinish", {icon: "stop", markerColor: "red"});
+					markerModel.setMarker(e.latlng.lat, e.latlng.lng, "routeFinish", {icon: "stop", markerColor: "red"});
 				}
 			},
 			{
