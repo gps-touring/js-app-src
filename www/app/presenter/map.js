@@ -68,10 +68,10 @@ define(["app/eventbus", "model/points", "presenter/map/wptseq"], function(eventb
 		// options properties are the options avaiable for Leaflet.awesome-markers.
 		// See https://github.com/lvoogdt/Leaflet.awesome-markers
 		var eventHandlers = {};
-		pt.setUserData("mapView", view.addMarker(latlng, options, eventHandlers));
+		pt.userdata.mapView = view.addMarker(latlng, options, eventHandlers);
 	}
 	function removeMarkerFromView(data) {
-		data.point.getUserData("mapView").destroy();
+		data.point.userdata.mapView.destroy();
 	}
 	function onPointAddStart(data/*, envelope*/) {
 		addMarkerToView(data, {icon: "play", markerColor: "green"});

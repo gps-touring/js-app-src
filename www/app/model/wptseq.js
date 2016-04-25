@@ -1,6 +1,13 @@
 define( ["model/gpx", "model/userdata", "app/eventbus"], function(gpx, userdata, eventbus) {
 	"use strict";
 
+	// Waypoint sequences represent routes (or tracks).
+	// The minimum data in a WaypopintSequence is an array of points {pts: [ ... ]}
+	// Optional information:
+	//    property      type
+	//    file			File. See https://developer.mozilla.org/en-US/docs/Web/API/File
+	//    gpxRte		object returned by gpxParse to represent a route <rte>
+	//    gpxTrkseg		object returned by gpxParse to represent a track segment <trkseg>
 	var store = {
 		wptsSeqs: []
 	};
@@ -19,7 +26,7 @@ define( ["model/gpx", "model/userdata", "app/eventbus"], function(gpx, userdata,
 		// for lat, long, ele, etc.
 		// TODO - specify this interface more precisely.
 		this.seq = theSeq;
-		this.id = id;	// Persistent, unique identifier. 
+		this.id = id;	// Persistent, unique identifier.
 
 		this.selected = false;
 		//	this.hovered = false; // Do we need to store this?
@@ -57,7 +64,7 @@ define( ["model/gpx", "model/userdata", "app/eventbus"], function(gpx, userdata,
 	WaypointSequence.prototype.getUserData = userdata.getUserData;
 	WaypointSequence.prototype.getSourceName = function() {
 		return this.source.name;
-	}
+	};
 
 	var addFromGpx = function(file, gpxData) {
 		var i, wptseqs = gpxData.getWaypointSequences();

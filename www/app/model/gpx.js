@@ -33,7 +33,7 @@ define( ["model/gpxParse"], function(gpxParse) {
 
 	function parseGpxStr(str) {
 		// Firstly, we get the result of parsing the XML according to the GPX specification:
-		var res =  gpxParse.parseXmlStr(str);
+		var res = gpxParse.parseXmlStr(str);
 
 		// Secondly, we turn it into an object that is accessible using our model's interface:
 		if (res !== null) {
