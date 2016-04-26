@@ -3,7 +3,7 @@ define(["leaflet"], function(leaflet) {
 
 	var keepCurrentView = false; 	// because it is initally set to by the system, not the user.
 
-	function WaypointSequence(map, latlngs, eventHandlers) {
+	function PointSeq(map, latlngs, eventHandlers) {
 
 		this.polyline = leaflet.polyline(latlngs, {className: "route"}).addTo(map);
 		var bounds = this.polyline.getBounds();
@@ -23,7 +23,7 @@ define(["leaflet"], function(leaflet) {
 		}
 		map.fitBounds(bounds);
 	}
-	WaypointSequence.prototype.showState = function(state) {
+	PointSeq.prototype.showState = function(state) {
 		// state is an Object whose keys are CSS class names, and whose values are boolean.
 		// e.g. {selected: true, hovered: false}
 
@@ -42,7 +42,7 @@ define(["leaflet"], function(leaflet) {
 	};
 
 	var pub = {
-		WaypointSequence: WaypointSequence
+		PointSeq: PointSeq
 	};
 	return pub;
 });

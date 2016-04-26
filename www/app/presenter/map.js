@@ -53,16 +53,16 @@ define(["app/eventbus", "model/markers", "presenter/map/wptseq"], function(event
 			click: function(e) { console.log("Map clicked" + e.latlng); }
 		};
 	}
-	function onNewWaypointSequence(data/*, envelope*/) {
-		//console.log("onNewWaypointSequence");
+	function onNewPointSeq(data/*, envelope*/) {
+		//console.log("onNewPointSeq");
 		var seq = data.waypointSequence;
 		var latLngs = wptseqPresenter.toLeafletLatLngs(seq);
 		// Here, we register eventHandlers with each view. If the model changes state
-		// as a result of handling these events, we will pick up those state changes in onWaypointSequenceStateChange.
-		seq.setUserData("mapView", view.addWaypointSequence(latLngs, wptseqPresenter.createEventHandlers(seq)));
+		// as a result of handling these events, we will pick up those state changes in onPointSeqStateChange.
+		seq.setUserData("mapView", view.addPointSeq(latLngs, wptseqPresenter.createEventHandlers(seq)));
 	}
-	function onWaypointSequenceStateChange(data/*, envelope*/) {
-		//console.log("onWaypointSequenceStateChange");
+	function onPointSeqStateChange(data/*, envelope*/) {
+		//console.log("onPointSeqStateChange");
 
 		data.waypointSequence.getUserData("mapView").showState(data.state);
 	}
@@ -80,8 +80,8 @@ define(["app/eventbus", "model/markers", "presenter/map/wptseq"], function(event
 
 	function init() {
 		// subscribe to events published by the model:
-		eventbus.subscribe({topic: "WaypointSequence.new", callback: onNewWaypointSequence});
-		eventbus.subscribe({topic: "WaypointSequence.stateChange", callback: onWaypointSequenceStateChange});
+		eventbus.subscribe({topic: "PointSeq.new", callback: onNewPointSeq});
+		eventbus.subscribe({topic: "PointSeq.stateChange", callback: onPointSeqStateChange});
 		eventbus.subscribe({topic: "Point.add", callback: onPointAdd});
 		eventbus.subscribe({topic: "Point.remove", callback: onPointRemove});
 	}

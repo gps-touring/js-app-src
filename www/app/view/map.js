@@ -28,15 +28,15 @@ define(
 				}).addTo(map);
 			}
 		};
-		function addWaypointSequence(latlngs, eventHandlers, className) {
-			return new wptseqView.WaypointSequence(map, latlngs, eventHandlers, className);
+		function addPointSeq(latlngs, eventHandlers, className) {
+			return new wptseqView.PointSeq(map, latlngs, eventHandlers, className);
 		}
 		function addMarker(latlng, options, eventHandlers) {
 			return new markerView.Marker(map, latlng, options, eventHandlers);
 		}
 		var pub = {
 			init: priv.init,
-			addWaypointSequence: addWaypointSequence,
+			addPointSeq: addPointSeq,
 			addMarker: addMarker
 		};
 		settings = presenter.registerView(pub);

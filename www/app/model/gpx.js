@@ -17,7 +17,7 @@ define( ["model/gpxParse", "model/point"], function(gpxParse, point) {
 	// We define a GpxObject in order to associate some methods with the parsedGpx:
 	var GpxObject = function(parsedGpx) {
 		this.gpx = parsedGpx;
-		this.getWaypointSequences = function() {
+		this.getPointSeqs = function() {
 			var i, j, res = [];
 			// console.log(this.gpx);
 			// Sequences of Waypoints can come from gpx/trk/trkseg ...
@@ -25,7 +25,7 @@ define( ["model/gpxParse", "model/point"], function(gpxParse, point) {
 				for (i = 0; i < this.gpx.trk.length; ++i) {
 					if (this.gpx.trk[i].trkseg) {
 						for (j = 0; j < this.gpx.trk[i].trkseg.length; ++j) {
-							//res.push(new WaypointSequence(this.gpx.trk[i].trkseg[j].trkpt));
+							//res.push(new PointSeq(this.gpx.trk[i].trkseg[j].trkpt));
 							// TODO - convert the sequence (and each point) into a standard model object.
 
 							res.push({
@@ -39,7 +39,7 @@ define( ["model/gpxParse", "model/point"], function(gpxParse, point) {
 			// ... or from gpx/rte
 			if (this.gpx.rte) {
 				for (i = 0; i < this.gpx.rte.length; ++i) {
-					//res.push(new WaypointSequence(this.gpx.rte[i].rtept));
+					//res.push(new PointSeq(this.gpx.rte[i].rtept));
 					// TODO - convert the sequence (and each point) into a standard model object.
 					res.push({
 						points: convertGpxWaypointsToModelPoints(this.gpx.rte[i].rtept),

@@ -10,21 +10,21 @@ define(["leaflet", "app/eventbus"], function(leaflet, eventbus) {
 		// within (as a closure) each event handler we create:
 		click: function(wptseq) {
 			return function(e) {
-				console.log("WaypointSequence click: " + e.latlng);
+				console.log("PointSeq click: " + e.latlng);
 				// Tell the model to do something:
 				wptseq.setSelected(true);
 			};
 		},
 		mouseover: function(wptseq) {
 			return function(e) {
-				//console.log("WaypointSequence mouseover: " + e.latlng);
+				//console.log("PointSeq mouseover: " + e.latlng);
 				// Tell the model to do something:
 				wptseq.setHovered(true);
 			};
 		},
 		mouseout: function(wptseq) {
 			return function(e) {
-				//console.log("WaypointSequence mouseout: " + e.latlng);
+				//console.log("PointSeq mouseout: " + e.latlng);
 				// Tell the model to do something:
 				wptseq.setHovered(false);
 			};

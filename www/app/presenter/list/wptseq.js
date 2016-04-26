@@ -7,20 +7,20 @@ define(["app/eventbus", "model/wptseq"], function(eventbus, wptseqModel) {
 		return { };	// return settings
 	}
 
-	function onNewWaypointSequence(data/*, envelope*/) {
-		//console.log("wptseqList: onNewWaypointSequence");
+	function onNewPointSeq(data/*, envelope*/) {
+		//console.log("wptseqList: onNewPointSeq");
 		//var seq = data.waypointSequence;
-		view.refresh(wptseqModel.getAllWaypointSequences());
+		view.refresh(wptseqModel.getAllPointSeqs());
 	}
-	function onWaypointSequenceStateChange(data/*, envelope*/) {
-		//console.log("wptseqList: onWaypointSequenceStateChange");
+	function onPointSeqStateChange(data/*, envelope*/) {
+		//console.log("wptseqList: onPointSeqStateChange");
 		view.showState(data.waypointSequence, data.state);
 	}
 
 	function init() {
 		// subscribe to events published by the model:
-		eventbus.subscribe({topic: "WaypointSequence.new", callback: onNewWaypointSequence});
-		eventbus.subscribe({topic: "WaypointSequence.stateChange", callback: onWaypointSequenceStateChange});
+		eventbus.subscribe({topic: "PointSeq.new", callback: onNewPointSeq});
+		eventbus.subscribe({topic: "PointSeq.stateChange", callback: onPointSeqStateChange});
 	}
 	var pub = {
 		registerView: registerView
