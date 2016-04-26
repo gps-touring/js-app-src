@@ -63,10 +63,10 @@ define( ["model/gpx", "model/userdata", "app/eventbus"], function(gpx, userdata,
 	};
 
 	var addFromGpx = function(file, gpxData) {
-		var i, wptseqs = gpxData.getPointSeqs();
-		//console.log("Num of waypoint sequences: " + wptseqs.length);
-		for (i = 0; i < wptseqs.length; ++i) {
-			var wps = new PointSeq(file, wptseqs[i], store.wptsSeqs.length);
+		var i, pointseqs = gpxData.getPointSeqs();
+		//console.log("Num of waypoint sequences: " + pointseqs.length);
+		for (i = 0; i < pointseqs.length; ++i) {
+			var wps = new PointSeq(file, pointseqs[i], store.wptsSeqs.length);
 			store.wptsSeqs.push(wps);
 			eventbus.publish({topic: "PointSeq.new", data: {pointSeq: wps}});
 		}

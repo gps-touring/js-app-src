@@ -1,10 +1,10 @@
-define( ["d3", "presenter/list/wptseq"], function(d3, presenter) {
+define( ["d3", "presenter/list/pointseq"], function(d3, presenter) {
 	"use strict";
 
 	var settings;
 	function init() {
-		d3.select("#wptseq-list").append("table").classed({"wptseq-table": true})
-			.append("tbody").classed({"wptseq-tbody": true});
+		d3.select("#pointseq-list").append("table").classed({"pointseq-table": true})
+			.append("tbody").classed({"pointseq-tbody": true});
 	}
 	function matchKey(d) { return d.id; }
 	function refresh(seqs) {
@@ -12,7 +12,7 @@ define( ["d3", "presenter/list/wptseq"], function(d3, presenter) {
 		// TODO - make this function update the values for rows that already exist in the table.
 		//        Currently, it does only the enter() processing, for missing rows.
 		var columns = ["id", "length"];
-		var rows = d3.select(".wptseq-tbody").selectAll("tr")
+		var rows = d3.select(".pointseq-tbody").selectAll("tr")
 			.data(seqs, matchKey)
 			.enter()
 			.append("tr")
@@ -45,7 +45,7 @@ define( ["d3", "presenter/list/wptseq"], function(d3, presenter) {
 	}
 	function showState(wpt, state) {
 		// Here we run a D3 update on the single item of data in the array [wpt]
-		var rows = d3.select(".wptseq-tbody").selectAll("tr")
+		var rows = d3.select(".pointseq-tbody").selectAll("tr")
 			.data([wpt], matchKey)
 			.classed(state)
 			;

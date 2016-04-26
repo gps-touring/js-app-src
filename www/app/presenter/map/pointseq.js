@@ -8,33 +8,33 @@ define(["leaflet", "app/eventbus"], function(leaflet, eventbus) {
 	var eventHandlers = {
 		// We need to keep the reference to each waypintSequence (in the model)
 		// within (as a closure) each event handler we create:
-		click: function(wptseq) {
+		click: function(pointseq) {
 			return function(e) {
 				console.log("PointSeq click: " + e.latlng);
 				// Tell the model to do something:
-				wptseq.setSelected(true);
+				pointseq.setSelected(true);
 			};
 		},
-		mouseover: function(wptseq) {
+		mouseover: function(pointseq) {
 			return function(e) {
 				//console.log("PointSeq mouseover: " + e.latlng);
 				// Tell the model to do something:
-				wptseq.setHovered(true);
+				pointseq.setHovered(true);
 			};
 		},
-		mouseout: function(wptseq) {
+		mouseout: function(pointseq) {
 			return function(e) {
 				//console.log("PointSeq mouseout: " + e.latlng);
 				// Tell the model to do something:
-				wptseq.setHovered(false);
+				pointseq.setHovered(false);
 			};
 		}
 	};
-	function createEventHandlers(wptseq) {
+	function createEventHandlers(pointseq) {
 		var res = {};
 		var i, keys = Object.keys(eventHandlers);
 		for (i = 0; i < keys.length; ++i) {
-			res[keys[i]] = eventHandlers[keys[i]](wptseq);
+			res[keys[i]] = eventHandlers[keys[i]](pointseq);
 		}
 		return res;
 	}

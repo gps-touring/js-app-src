@@ -13,7 +13,7 @@ define(["leaflet", "leafletAwesomeMarkers"], function(leaflet, awesomeMarkers) {
 		var redMarker = leaflet.AwesomeMarkers.icon(opts);
 		this.map = map;
 		this.marker = leaflet.marker(latlng, {icon: redMarker}).addTo(map);
-		// Add the event handlers that are defined in model/wptseq:
+		// Add the event handlers that are defined in model/pointseq:
 		var evs = Object.keys(eventHandlers);
 		for (i = 0; i < evs.length; ++i) {
 			this.marker.on(evs[i], eventHandlers[evs[i]]);

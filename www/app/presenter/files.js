@@ -1,4 +1,4 @@
-define( ["model/gpx", "model/wptseq"], function(gpx, wptseq) {
+define( ["model/gpx", "model/pointseq"], function(gpx, pointseq) {
 	"use strict";
 
 	var views = [];
@@ -10,7 +10,7 @@ define( ["model/gpx", "model/wptseq"], function(gpx, wptseq) {
 		console.log("presenter/files: " + file.name);
 		var gpxData = gpx.parseGpxStr(contents);
 		if (gpxData !== null) {
-			wptseq.addFromGpx(file, gpxData);
+			pointseq.addFromGpx(file, gpxData);
 		}
 	};
 

@@ -1,4 +1,4 @@
-define(["app/eventbus", "model/wptseq"], function(eventbus, wptseqModel) {
+define(["app/eventbus", "model/pointseq"], function(eventbus, pointseqModel) {
 	"use strict";
 
 	var view;
@@ -8,12 +8,12 @@ define(["app/eventbus", "model/wptseq"], function(eventbus, wptseqModel) {
 	}
 
 	function onNewPointSeq(data/*, envelope*/) {
-		//console.log("wptseqList: onNewPointSeq");
+		//console.log("pointseqList: onNewPointSeq");
 		//var seq = data.pointSeq;
-		view.refresh(wptseqModel.getAllPointSeqs());
+		view.refresh(pointseqModel.getAllPointSeqs());
 	}
 	function onPointSeqStateChange(data/*, envelope*/) {
-		//console.log("wptseqList: onPointSeqStateChange");
+		//console.log("pointseqList: onPointSeqStateChange");
 		view.showState(data.pointSeq, data.state);
 	}
 

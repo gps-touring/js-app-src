@@ -1,6 +1,6 @@
 // This is the place where the various views are pulled into the application.
 define(
-	["d3", "view/files", "view/map", "view/menu", "view/list/wptseq"],
+	["d3", "view/files", "view/map", "view/menu", "view/list/pointseq"],
 	function(d3, files, map, menu, list) {	//eslint-disable-line no-unused-vars
 		"use strict";
 

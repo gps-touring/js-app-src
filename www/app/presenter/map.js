@@ -1,4 +1,4 @@
-define(["app/eventbus", "model/markers", "presenter/map/wptseq"], function(eventbus, markerModel, wptseqPresenter) {
+define(["app/eventbus", "model/markers", "presenter/map/pointseq"], function(eventbus, markerModel, pointseqPresenter) {
 	"use strict";
 
 	var view;
@@ -56,10 +56,10 @@ define(["app/eventbus", "model/markers", "presenter/map/wptseq"], function(event
 	function onNewPointSeq(data/*, envelope*/) {
 		//console.log("onNewPointSeq");
 		var seq = data.pointSeq;
-		var latLngs = wptseqPresenter.toLeafletLatLngs(seq);
+		var latLngs = pointseqPresenter.toLeafletLatLngs(seq);
 		// Here, we register eventHandlers with each view. If the model changes state
 		// as a result of handling these events, we will pick up those state changes in onPointSeqStateChange.
-		seq.setUserData("mapView", view.addPointSeq(latLngs, wptseqPresenter.createEventHandlers(seq)));
+		seq.setUserData("mapView", view.addPointSeq(latLngs, pointseqPresenter.createEventHandlers(seq)));
 	}
 	function onPointSeqStateChange(data/*, envelope*/) {
 		//console.log("onPointSeqStateChange");

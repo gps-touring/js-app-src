@@ -1,6 +1,6 @@
 define(
-	["leaflet", "leaflet.contextmenu", "presenter/map", "view/map/wptseq", "view/map/marker"],
-	function(leaflet, contextmenu, presenter, wptseqView, markerView) {
+	["leaflet", "leaflet.contextmenu", "presenter/map", "view/map/pointseq", "view/map/marker"],
+	function(leaflet, contextmenu, presenter, pointseqView, markerView) {
 		"use strict";
 
 		var settings;
@@ -29,7 +29,7 @@ define(
 			}
 		};
 		function addPointSeq(latlngs, eventHandlers, className) {
-			return new wptseqView.PointSeq(map, latlngs, eventHandlers, className);
+			return new pointseqView.PointSeq(map, latlngs, eventHandlers, className);
 		}
 		function addMarker(latlng, options, eventHandlers) {
 			return new markerView.Marker(map, latlng, options, eventHandlers);
