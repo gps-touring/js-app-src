@@ -21,20 +21,19 @@ define( ["model/gpx", "model/userdata", "app/eventbus"], function(gpx, userdata,
 	// A Sequence of waypoints is a core part of the model: it is what defines a section of a route.
 
 	var WaypointSequence = function(theSource, theSeq, id) {
-		this.source = theSource;
-		// The sequence is exprected to be an array of objects, each object supporting some standard accessors
-		// for lat, long, ele, etc.
-		// TODO - specify this interface more precisely.
-		this.seq = theSeq;
-		this.id = id;	// Persistent, unique identifier.
-
-		this.selected = false;
-		//	this.hovered = false; // Do we need to store this?
-
-		this.length = this.seq.length;
-		this.item = function(i) {
-			return this.seq[i];
-		};
+		Object.defineProperties(this, {
+			source: { value: theSource, enumerable: true },
+			seq: {value: theSeq.points, enumerable: true },
+			id: {value: id, enumerable: true },
+			gpxRte: { value: theSeq.gpxRte, enumerable: true },
+			gpxTrk: { value: theSeq.gpxTrk, enumerable: true },
+			selected: { value: false, enumerable: true, writable: true },
+			length: { value:theSeq.points.length, enumerable: true }
+		});
+		console.log(this);
+	};
+	WaypointSequence.prototype.item = function(i) {
+		return this.seq[i];
 	};
 	WaypointSequence.prototype.setSelected = function (isIt) {
 		if (this.selected !== isIt) {

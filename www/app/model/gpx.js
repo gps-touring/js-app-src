@@ -28,7 +28,10 @@ define( ["model/gpxParse", "model/point"], function(gpxParse, point) {
 							//res.push(new WaypointSequence(this.gpx.trk[i].trkseg[j].trkpt));
 							// TODO - convert the sequence (and each point) into a standard model object.
 
-							res.push(convertGpxWaypointsToModelPoints(this.gpx.trk[i].trkseg[j].trkpt));
+							res.push({
+								points: convertGpxWaypointsToModelPoints(this.gpx.trk[i].trkseg[j].trkpt),
+								gpxTrk: this.gpx.trk[i]
+							});
 						}
 					}
 				}
@@ -38,7 +41,10 @@ define( ["model/gpxParse", "model/point"], function(gpxParse, point) {
 				for (i = 0; i < this.gpx.rte.length; ++i) {
 					//res.push(new WaypointSequence(this.gpx.rte[i].rtept));
 					// TODO - convert the sequence (and each point) into a standard model object.
-					res.push(convertGpxWaypointsToModelPoints(this.gpx.rte[i].rtept));
+					res.push({
+						points: convertGpxWaypointsToModelPoints(this.gpx.rte[i].rtept),
+						gpxRte: this.gpx.rte[i]
+					});
 				}
 			}
 			return res;
