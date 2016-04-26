@@ -41,7 +41,7 @@ define(["leaflet", "app/eventbus"], function(leaflet, eventbus) {
 	function toLeafletLatLngs(seq) {
 		var j, latLngs = [];
 		for (j = 0; j < seq.length; ++j) {
-			latLngs.push(leaflet.latLng(seq.item(j).lat, seq.item(j).lon));
+			latLngs.push(leaflet.latLng(seq.item(j).lat, seq.item(j).lng));
 		}
 		return latLngs;
 	}

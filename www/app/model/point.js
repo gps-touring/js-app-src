@@ -7,9 +7,15 @@ define( [], function() {
 			lat: { value: lat, enumerable: true },
 			lng: { value: lng, enumerable: true },
 			ele: { value: ele, enumerable: true },
-			gpxWpt: { value: opts.gpxWpt, enumerable: true },
+			//gpxWpt: { value: opts.gpxWpt, enumerable: true },
+			// TODO - Don't define userdata unless it is needed.
+			//        Mixin methods from model/userdata?
 			userdata: { value: {}, writable: true }
 		});
+		if (opts.gpxWpt !== undefined) {
+			// We don't want to waste space with this property if it isn't needed.
+			Object.defineProperty(this, "gpxWpt", { value: opts.gpxWpt, enumerable: true });
+		}
 		console.log(this);
 		// TODO - Decide if gpxWpt should be defined for all points that originate from GPX, or just those which have
 		//        data in addition to the lat, lng and ele. I think the latter is prefereable.

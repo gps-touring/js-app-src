@@ -1,5 +1,18 @@
-define( ["model/gpxParse"], function(gpxParse) {
+define( ["model/gpxParse", "model/point"], function(gpxParse, point) {
 	"use strict";
+
+	function convertGpxWaypointsToModelPoints(gpxWpts) {
+		return gpxWpts.map(function(e) {
+			// We only want to pass the gpx wpt data (e) into the Point if there is more in it than just the
+			// lat, lon, and (optionally) ele properties.
+			// We assume that lat and lon are always there (else it's ill-defined GPX wpt).
+			var len = Object.keys(e).length;
+			var wptHasAdditionalInfo = len > 3 || (e.ele === undefined && len > 2);
+			var gpxWpt = wptHasAdditionalInfo ? e : undefined;
+
+			return new point.Point(e.lat, e.lon, e.ele, {gpxWpt: gpxWpt});
+		});
+	}
 
 	// We define a GpxObject in order to associate some methods with the parsedGpx:
 	var GpxObject = function(parsedGpx) {
@@ -14,7 +27,8 @@ define( ["model/gpxParse"], function(gpxParse) {
 						for (j = 0; j < this.gpx.trk[i].trkseg.length; ++j) {
 							//res.push(new WaypointSequence(this.gpx.trk[i].trkseg[j].trkpt));
 							// TODO - convert the sequence (and each point) into a standard model object.
-							res.push(this.gpx.trk[i].trkseg[j].trkpt);
+
+							res.push(convertGpxWaypointsToModelPoints(this.gpx.trk[i].trkseg[j].trkpt));
 						}
 					}
 				}
@@ -24,7 +38,7 @@ define( ["model/gpxParse"], function(gpxParse) {
 				for (i = 0; i < this.gpx.rte.length; ++i) {
 					//res.push(new WaypointSequence(this.gpx.rte[i].rtept));
 					// TODO - convert the sequence (and each point) into a standard model object.
-					res.push(this.gpx.rte[i].rtept);
+					res.push(convertGpxWaypointsToModelPoints(this.gpx.rte[i].rtept));
 				}
 			}
 			return res;
