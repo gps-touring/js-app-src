@@ -23,7 +23,7 @@ define( ["model/gpx", "model/userdata", "app/eventbus"], function(gpx, userdata,
 	var WaypointSequence = function(theSource, theSeq, id) {
 		Object.defineProperties(this, {
 			source: { value: theSource, enumerable: true },
-			seq: {value: theSeq.points, enumerable: true },
+			points: {value: theSeq.points, enumerable: true },
 			id: {value: id, enumerable: true },
 			gpxRte: { value: theSeq.gpxRte, enumerable: true },
 			gpxTrk: { value: theSeq.gpxTrk, enumerable: true },
@@ -31,9 +31,6 @@ define( ["model/gpx", "model/userdata", "app/eventbus"], function(gpx, userdata,
 			length: { value:theSeq.points.length, enumerable: true }
 		});
 		console.log(this);
-	};
-	WaypointSequence.prototype.item = function(i) {
-		return this.seq[i];
 	};
 	WaypointSequence.prototype.setSelected = function (isIt) {
 		if (this.selected !== isIt) {
