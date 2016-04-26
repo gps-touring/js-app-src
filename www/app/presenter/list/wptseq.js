@@ -9,12 +9,12 @@ define(["app/eventbus", "model/wptseq"], function(eventbus, wptseqModel) {
 
 	function onNewPointSeq(data/*, envelope*/) {
 		//console.log("wptseqList: onNewPointSeq");
-		//var seq = data.waypointSequence;
+		//var seq = data.pointSeq;
 		view.refresh(wptseqModel.getAllPointSeqs());
 	}
 	function onPointSeqStateChange(data/*, envelope*/) {
 		//console.log("wptseqList: onPointSeqStateChange");
-		view.showState(data.waypointSequence, data.state);
+		view.showState(data.pointSeq, data.state);
 	}
 
 	function init() {

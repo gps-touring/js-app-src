@@ -41,7 +41,7 @@ define( ["model/gpx", "model/userdata", "app/eventbus"], function(gpx, userdata,
 			eventbus.publish({
 				topic: "PointSeq.stateChange",
 				data: {
-					waypointSequence: this,
+					pointSeq: this,
 					state: {selected: this.selected}
 				}
 			});
@@ -51,7 +51,7 @@ define( ["model/gpx", "model/userdata", "app/eventbus"], function(gpx, userdata,
 		eventbus.publish({
 			topic: "PointSeq.stateChange",
 			data: {
-				waypointSequence: this,
+				pointSeq: this,
 				state: {hovered: isIt, selected: this.selected}
 			}
 		});
@@ -68,7 +68,7 @@ define( ["model/gpx", "model/userdata", "app/eventbus"], function(gpx, userdata,
 		for (i = 0; i < wptseqs.length; ++i) {
 			var wps = new PointSeq(file, wptseqs[i], store.wptsSeqs.length);
 			store.wptsSeqs.push(wps);
-			eventbus.publish({topic: "PointSeq.new", data: {waypointSequence: wps}});
+			eventbus.publish({topic: "PointSeq.new", data: {pointSeq: wps}});
 		}
 	};
 	function getAllPointSeqs() {

@@ -19,7 +19,7 @@ define( ["d3", "presenter/list/wptseq"], function(d3, presenter) {
 			.attr("title", function(d) { return d.getSourceName(); });
 
 		rows.on("click", function(d) {
-			// D3 passes the datum as first param, i.e. the waypointSequence in the model.
+			// D3 passes the datum as first param, i.e. the pointSeq in the model.
 			// This means that we have the view talking directly to the model, which
 			// is not supposed to happen! Hey ho.
 			d.setSelected(true);
