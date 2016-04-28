@@ -2,22 +2,9 @@ define( ["model/gpx", "model/userdata", "app/eventbus"], function(gpx, userdata,
 	"use strict";
 
 	// Waypoint sequences represent routes (or tracks).
-	// The minimum data in a WaypopintSequence is an array of points {pts: [ ... ]}
-	// Optional information:
-	//    property      type
-	//    file			File. See https://developer.mozilla.org/en-US/docs/Web/API/File
-	//    gpxRte		object returned by gpxParse to represent a route <rte>
-	//    gpxTrkseg		object returned by gpxParse to represent a track segment <trkseg>
 	var store = {
 		wptsSeqs: []
 	};
-	function deselectAllPointSeqs() {
-		var i;
-		for (i = 0; i < store.wptsSeqs.length; ++i) {
-			store.wptsSeqs[i].setSelected(false);
-		}
-	}
-
 	// A Sequence of waypoints is a core part of the model: it is what defines a section of a route.
 
 	var PointSeq = function(theSource, theSeq, id) {
@@ -29,13 +16,25 @@ define( ["model/gpx", "model/userdata", "app/eventbus"], function(gpx, userdata,
 			gpxTrk: { value: theSeq.gpxTrk, enumerable: true },
 			selected: { value: false, enumerable: true, writable: true },
 			length: { value:theSeq.points.length, enumerable: true }
+			// userdata: property created if setUserData is called.
 		});
 		console.log(this);
 	};
+	// define a userdata property for PointSeq if setUserData is called:
+	PointSeq.prototype.setUserData = userdata.setUserData;
+	PointSeq.prototype.getUserData = userdata.getUserData;
+
+	function deselectAll() {
+		var i;
+		for (i = 0; i < store.wptsSeqs.length; ++i) {
+			store.wptsSeqs[i].setSelected(false);
+		}
+	}
+
 	PointSeq.prototype.setSelected = function (isIt) {
 		if (this.selected !== isIt) {
 			if (isIt) {
-				deselectAllPointSeqs();
+				deselectAll();
 			}
 			this.selected = isIt;
 			eventbus.publish({
@@ -56,8 +55,6 @@ define( ["model/gpx", "model/userdata", "app/eventbus"], function(gpx, userdata,
 			}
 		});
 	};
-	PointSeq.prototype.setUserData = userdata.setUserData;
-	PointSeq.prototype.getUserData = userdata.getUserData;
 	PointSeq.prototype.getSourceName = function() {
 		return this.source.name;
 	};
@@ -71,13 +68,13 @@ define( ["model/gpx", "model/userdata", "app/eventbus"], function(gpx, userdata,
 			eventbus.publish({topic: "PointSeq.new", data: {pointSeq: wps}});
 		}
 	};
-	function getAllPointSeqs() {
+	function getAll() {
 		return store.wptsSeqs;
 	}
 
 	var pub = {
 		addFromGpx: addFromGpx,
-		getAllPointSeqs: getAllPointSeqs
+		getAll: getAll
 	};
 	return pub;
 });

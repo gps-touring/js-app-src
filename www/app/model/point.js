@@ -13,6 +13,7 @@ define( ["model/userdata"], function(userdata) {
 			lat: { value: lat, enumerable: true },
 			lng: { value: lng, enumerable: true },
 			ele: { value: ele, enumerable: true },
+			// userdata: property created if setUserData is called.
 		});
 		if (opts.gpxWpt !== undefined) {
 			// We don't want to waste space with this property if it isn't needed.

@@ -10,7 +10,7 @@ define(["app/eventbus", "model/pointseq"], function(eventbus, pointseqModel) {
 	function onNewPointSeq(data/*, envelope*/) {
 		//console.log("pointseqList: onNewPointSeq");
 		//var seq = data.pointSeq;
-		view.refresh(pointseqModel.getAllPointSeqs());
+		view.refresh(pointseqModel.getAll());
 	}
 	function onPointSeqStateChange(data/*, envelope*/) {
 		//console.log("pointseqList: onPointSeqStateChange");
