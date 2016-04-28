@@ -6,15 +6,24 @@ define(["app/eventbus", "model/pointseq"], function(eventbus, pointseqModel) {
 		view = v;
 		return { };	// return settings
 	}
+	function convertPointSeqForView(ptSeq) {
+		return {
+			modelObject: ptSeq,
+			title: ptSeq.getSourceName(),
+			id: ptSeq.id,
+			points: ptSeq.length + " pts",
+			distance: (ptSeq.distance / 1000).toFixed(2) + " km"
+		};
+	}
 
 	function onNewPointSeq(data/*, envelope*/) {
 		//console.log("pointseqList: onNewPointSeq");
 		//var seq = data.pointSeq;
-		view.refresh(pointseqModel.getAll());
+		view.refresh(pointseqModel.getAll().map(convertPointSeqForView));
 	}
 	function onPointSeqStateChange(data/*, envelope*/) {
 		//console.log("pointseqList: onPointSeqStateChange");
-		view.showState(data.pointSeq, data.state);
+		view.showState(convertPointSeqForView(data.pointSeq), data.state);
 	}
 
 	function init() {

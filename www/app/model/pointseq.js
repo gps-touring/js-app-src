@@ -3,11 +3,14 @@ define( ["model/gpx", "model/userdata", "app/eventbus"], function(gpx, userdata,
 
 	// Waypoint sequences represent routes (or tracks).
 	var store = {
-		wptsSeqs: []
+		pointSeqs: []
 	};
 	// A Sequence of waypoints is a core part of the model: it is what defines a section of a route.
 
 	var PointSeq = function(theSource, theSeq, id) {
+		var cache = {
+			distance: null
+		};
 		Object.defineProperties(this, {
 			source: { value: theSource, enumerable: true },
 			points: {value: theSeq.points, enumerable: true },
@@ -15,10 +18,18 @@ define( ["model/gpx", "model/userdata", "app/eventbus"], function(gpx, userdata,
 			gpxRte: { value: theSeq.gpxRte, enumerable: true },
 			gpxTrk: { value: theSeq.gpxTrk, enumerable: true },
 			selected: { value: false, enumerable: true, writable: true },
-			length: { value:theSeq.points.length, enumerable: true }
+			length: { value: theSeq.points.length, enumerable: true },
+			distance: {
+				get: function() {
+					if (cache.distance === null) {
+						cache.distance = this.getDistance();
+					}
+					return cache.distance;
+				}
+			}
 			// userdata: property created if setUserData is called.
 		});
-		console.log(this);
+		//console.log(this);
 	};
 	// define a userdata property for PointSeq if setUserData is called:
 	PointSeq.prototype.setUserData = userdata.setUserData;
@@ -26,8 +37,8 @@ define( ["model/gpx", "model/userdata", "app/eventbus"], function(gpx, userdata,
 
 	function deselectAll() {
 		var i;
-		for (i = 0; i < store.wptsSeqs.length; ++i) {
-			store.wptsSeqs[i].setSelected(false);
+		for (i = 0; i < store.pointSeqs.length; ++i) {
+			store.pointSeqs[i].setSelected(false);
 		}
 	}
 
@@ -58,18 +69,29 @@ define( ["model/gpx", "model/userdata", "app/eventbus"], function(gpx, userdata,
 	PointSeq.prototype.getSourceName = function() {
 		return this.source.name;
 	};
+	PointSeq.prototype.getDistance = function() {
+		var pts = this.points;
+		var i, len = pts.length;
+		var res = 0;
+		for (i = 1; i < len; ++i) {
+			res += pts[i - 1].distanceTo(pts[i]);
+		}
+		//console.log("PointSeq.getDistance, " + len + " points, " + res + " metres");
+		return res;
+	};
+
 
 	var addFromGpx = function(file, gpxData) {
 		var i, pointseqs = gpxData.getPointSeqs();
 		//console.log("Num of waypoint sequences: " + pointseqs.length);
 		for (i = 0; i < pointseqs.length; ++i) {
-			var wps = new PointSeq(file, pointseqs[i], store.wptsSeqs.length);
-			store.wptsSeqs.push(wps);
+			var wps = new PointSeq(file, pointseqs[i], store.pointSeqs.length);
+			store.pointSeqs.push(wps);
 			eventbus.publish({topic: "PointSeq.new", data: {pointSeq: wps}});
 		}
 	};
 	function getAll() {
-		return store.wptsSeqs;
+		return store.pointSeqs;
 	}
 
 	var pub = {

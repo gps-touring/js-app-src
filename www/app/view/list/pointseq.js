@@ -8,27 +8,29 @@ define( ["d3", "presenter/list/pointseq"], function(d3, presenter) {
 	}
 	function matchKey(d) { return d.id; }
 	function refresh(seqs) {
+		//console.log(seqs);
 
 		// TODO - make this function update the values for rows that already exist in the table.
 		//        Currently, it does only the enter() processing, for missing rows.
-		var columns = ["id", "length"];
+		var columns = ["id", "points", "distance"];
 		var rows = d3.select(".pointseq-tbody").selectAll("tr")
 			.data(seqs, matchKey)
 			.enter()
 			.append("tr")
-			.attr("title", function(d) { return d.getSourceName(); });
+			.attr("title", function(d) { return d.title; });
 
 		rows.on("click", function(d) {
-			// D3 passes the datum as first param, i.e. the pointSeq in the model.
+			// D3 passes the datum as first param, i.e. the pointSeq provided by the presenter.
+			// This gives us access to the model's PointSeq via the modelObject property.
 			// This means that we have the view talking directly to the model, which
 			// is not supposed to happen! Hey ho.
-			d.setSelected(true);
+			d.modelObject.setSelected(true);
 		})
 		.on("mouseover", function(d) {
-			d.setHovered(true);
+			d.modelObject.setHovered(true);
 		})
 		.on("mouseout", function(d) {
-			d.setHovered(false);
+			d.modelObject.setHovered(false);
 		});
 
 		var cols = rows.selectAll("td")
