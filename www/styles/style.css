@@ -42,6 +42,9 @@ tr.hovered {
 tr.selected.hovered {
 	background-color: #0040EE;
 }
+td.pointseq-cell {
+	text-align: right;
+}
 
 #menubar {
 	/* Without 'overflow: visible', the dropdown menus are clipped inside the menubar: */

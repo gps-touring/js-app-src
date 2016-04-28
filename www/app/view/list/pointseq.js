@@ -42,6 +42,7 @@ define( ["d3", "presenter/list/pointseq"], function(d3, presenter) {
 			})
 			.enter()
 			.append("td")
+			.classed("pointseq-cell", true)
 			.html(function(d) { return d.value; })
 			;
 	}
