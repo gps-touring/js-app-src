@@ -14,6 +14,8 @@ requirejs.config({
 		presenter: "../app/presenter",
 		data: "../app/data",
 
+		// If we want to load D3 from a local source:
+		//d3: "d3.v3.min"
 		// We want to load external libs from a CDN to take advantage of cacheing by the user's browser:
 		//d3: "http://d3js.org/d3.v3.min",
 		//topojson: "http://d3js.org/topojson.v1.min",
@@ -36,11 +38,12 @@ requirejs.config({
 		// The require/json plugin depends on text:
 		//text: "text"
 
-		// If we want to load D3 from a local source:
-		//d3: "d3.v3.min"
 		leaflet: "leaflet",
 		leafletAwesomeMarkers: "leaflet.awesome-markers.min",
-		gpxParse: "gpx-parse-browser"
+
+		// See https://stuk.github.io/jszip/
+		jszip: "jszip.min",
+		FileSaver: "FileSaver.min"
     }
 });
 
