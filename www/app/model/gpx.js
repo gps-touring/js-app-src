@@ -1,4 +1,4 @@
-define( ["model/gpxParse", "model/point"], function(gpxParse, point) {
+define( ["app/eventbus", "model/gpxParse", "model/point"], function(eventbus, gpxParse, point) {
 	"use strict";
 
 	function convertGpxWaypointsToModelPoints(gpxWpts) {
@@ -9,8 +9,14 @@ define( ["model/gpxParse", "model/point"], function(gpxParse, point) {
 			var len = Object.keys(e).length;
 			var wptHasAdditionalInfo = len > 3 || (e.ele === undefined && len > 2);
 			var gpxWpt = wptHasAdditionalInfo ? e : undefined;
-
-			return new point.Point(e.lat, e.lon, e.ele, {gpxWpt: gpxWpt});
+			var pt = new point.Point(e.lat, e.lon, e.ele, {gpxWpt: gpxWpt});
+			if (wptHasAdditionalInfo) {
+				console.log("Waypoint with extra data:");
+				console.log(e);
+				// icon taken from http://fortawesome.github.io/Font-Awesome/icons/
+				eventbus.publish({topic: "Point.add", data: { point: pt, options: {icon: "map-signs", markerColor: "blue"} } });
+			}
+			return pt;
 		});
 	}
 
@@ -25,7 +31,6 @@ define( ["model/gpxParse", "model/point"], function(gpxParse, point) {
 				for (i = 0; i < this.gpx.trk.length; ++i) {
 					if (this.gpx.trk[i].trkseg) {
 						for (j = 0; j < this.gpx.trk[i].trkseg.length; ++j) {
-							//res.push(new PointSeq(this.gpx.trk[i].trkseg[j].trkpt));
 							// TODO - convert the sequence (and each point) into a standard model object.
 
 							res.push({
@@ -39,13 +44,21 @@ define( ["model/gpxParse", "model/point"], function(gpxParse, point) {
 			// ... or from gpx/rte
 			if (this.gpx.rte) {
 				for (i = 0; i < this.gpx.rte.length; ++i) {
-					//res.push(new PointSeq(this.gpx.rte[i].rtept));
 					// TODO - convert the sequence (and each point) into a standard model object.
 					res.push({
 						points: convertGpxWaypointsToModelPoints(this.gpx.rte[i].rtept),
 						gpxRte: this.gpx.rte[i]
 					});
 				}
+			}
+			return res;
+		};
+		this.getWaypoints = function() {
+			var i, j, res = [];
+			if (this.gpx.wpt) {
+				res.push({
+					points: convertGpxWaypointsToModelPoints(this.gpx.wpt)
+				});
 			}
 			return res;
 		};
