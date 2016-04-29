@@ -38,7 +38,8 @@ requirejs.config({
 		// The require/json plugin depends on text:
 		//text: "text"
 
-		leaflet: "leaflet",
+		//leaflet: "leaflet",
+		leaflet: "leaflet.1.0.0.rc1",
 		leafletAwesomeMarkers: "leaflet.awesome-markers.min",
 
 		// See https://stuk.github.io/jszip/
