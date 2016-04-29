@@ -5,6 +5,10 @@ define(["leaflet", "leafletAwesomeMarkers", "leaflet.markercluster"], function(l
 
 	function Marker(map, latlng, options, eventHandlers) {
 
+		var popuptext = "Popup text goes here <a href=\"http://www.google.co.uk\" target=\"_blank\">Google?</a>.";
+		 
+		var hovertext = "Hover text goes here.";
+
 		// Using font-awesome icons, the available choices can be seen here:
 		// http://fortawesome.github.io/Font-Awesome/icons/
 		var dfltOptions = {prefix: "fa"};	// "fa" selects the font-awesome icon set (we have no other)
@@ -15,7 +19,8 @@ define(["leaflet", "leafletAwesomeMarkers", "leaflet.markercluster"], function(l
 		var redMarker = leaflet.AwesomeMarkers.icon(opts);
 		this.map = map;
 		//this.marker = leaflet.marker(latlng, {icon: redMarker}).addTo(map);
-		this.marker = leaflet.marker(latlng, {icon: redMarker});
+		this.marker = leaflet.marker(latlng, {icon: redMarker, title: hovertext});
+		this.marker.bindPopup(popuptext);
 		// Add the event handlers that are defined in model/pointseq:
 		var evs = Object.keys(eventHandlers);
 		for (i = 0; i < evs.length; ++i) {
