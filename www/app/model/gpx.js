@@ -18,7 +18,12 @@ define( ["app/eventbus", "model/gpxParse", "model/point"], function(eventbus, gp
 					topic: "Point.add",
 					data: {
 						point: pt,
-						options: {cluster: true, icon: "map-signs", markerColor: "blue"}
+						options: {
+							cluster: true,
+							icon: "map-signs",
+							hovertext: e.name,
+							markerColor: "blue"
+						}
 					}
 				});
 			}

@@ -16,21 +16,18 @@ define(["leaflet", "leafletAwesomeMarkers", "leaflet.markercluster"], function(l
 
 		var popuptext = "Popup text goes here <a href=\"http://www.google.co.uk\" target=\"_blank\">Google?</a>.";
 		 
-		var hovertext = "Hover text goes here.";
+		var hovertext = options.hovertext || "Hover text goes here.";
 
 		// options argument overrides our default options:
 		var opts = Object.assign(dfltOptions, options);
 		var icon = leaflet.AwesomeMarkers.icon(opts);
 		this.marker = leaflet.marker(latlng, {icon: icon, title: hovertext});
 		this.marker.bindPopup(popuptext);
+
 		// Add the event handlers that are defined in model/pointseq:
-		//var i, evs = Object.keys(eventHandlers);
-		//for (i = 0; i < evs.length; ++i) {
-			//this.marker.on(evs[i], eventHandlers[evs[i]]);
-		//}
 		Object.keys(eventHandlers).forEach(function(k) {
-			this.marker.on(k, eventHandlers[k])
-		});
+			this.marker.on(k, eventHandlers[k]);
+		}, this);
 
 		this.parent = options.cluster ? group : map;
 		this.parent.addLayer(this.marker);
