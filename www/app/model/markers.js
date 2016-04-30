@@ -4,6 +4,7 @@ define( ["model/point", "app/eventbus"], function(point, eventbus) {
 	var store = {
 	};
 	function setMarker(lat, lng, markerName, markerOptions) {
+		var opts = Object.assign({cluster: false}, markerOptions);
 		if (store[markerName]) {
 			eventbus.publish({topic: "Point.remove", data: {point: store[markerName]}});
 		}

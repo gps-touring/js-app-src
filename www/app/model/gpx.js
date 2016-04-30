@@ -14,7 +14,13 @@ define( ["app/eventbus", "model/gpxParse", "model/point"], function(eventbus, gp
 				console.log("Waypoint with extra data:");
 				console.log(e);
 				// icon taken from http://fortawesome.github.io/Font-Awesome/icons/
-				eventbus.publish({topic: "Point.add", data: { point: pt, options: {icon: "map-signs", markerColor: "blue"} } });
+				eventbus.publish({
+					topic: "Point.add",
+					data: {
+						point: pt,
+						options: {cluster: true, icon: "map-signs", markerColor: "blue"}
+					}
+				});
 			}
 			return pt;
 		});
