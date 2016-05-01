@@ -71,10 +71,16 @@ define(["app/eventbus", "model/markers", "presenter/map/pointseq"], function(eve
 		var latlng = [pt.lat, pt.lng];	// Understood by Leaflet.
 		// options properties are the options avaiable for Leaflet.awesome-markers.
 		// See https://github.com/lvoogdt/Leaflet.awesome-markers
+
+		var eventHandlers = {};
+		/*
+		// Test interaction between click event handlers and bound Popups:
 		var eventHandlers = {click: function(e) { 
 			console.log("click");
 			console.log(e);
 		}};
+		*/
+
 		pt.setUserData("mapView", view.addMarker(latlng, data.options, eventHandlers));
 	}
 	function onPointRemove(data/*, envelope*/) {
