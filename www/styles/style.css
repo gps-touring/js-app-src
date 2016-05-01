@@ -15,6 +15,11 @@ body { height: 100%; margin: 0; padding: 0 }
 .body.row { top: 35px; bottom: 25px; }
 .footer.row { height: 25px; bottom: 0; line-height: 25px; }
 
+#tabs-control { position: absolute; left:0; right: 0; top: 0; height: 50px; }
+#tabs-content { position: absolute; left:0; right: 0; top: 50px; bottom: 0; }
+.tab-content { position: absolute; left:0; right: 0; top: 0; display: none; }
+.tab-content.selected { display: block; }
+
 /* There are some style 'options' that can be set within leaflet. See http://leafletjs.com/reference.html#path-options
  * However, the correspondence between those and the CSS properties required here is unclear!
  * Bare in mind that these are SVG styles. Perhaps look at the SVG spec? https://www.w3.org/TR/SVG/propidx.html

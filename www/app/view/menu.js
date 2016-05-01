@@ -2,6 +2,22 @@ define( ["d3", "presenter/menu"], function(d3, presenter) {
 	"use strict";
 
 	var settings;
+
+	// TODO - move all this tab control stuff to a file of its own.
+	function showRoutes() {
+		console.log("showRoutes");
+		d3.select("#pointseq-list").classed({selected: true});
+		d3.select("#file-list").classed({selected: false});
+	}
+	function showFiles() {
+		console.log("showFiles");
+		d3.select("#pointseq-list").classed({selected: false});
+		d3.select("#file-list").classed({selected: true});
+	}
+	var tabControls = [
+	{text: "Routes", click: showRoutes},
+	{text: "Files", click: showFiles}
+	];
 	var priv = {
 		init: function() {
 			var i, j, selection;
@@ -19,6 +35,14 @@ define( ["d3", "presenter/menu"], function(d3, presenter) {
 				}
 
 			}
+
+			d3.select("#tabs-control").selectAll("button")
+				.data(tabControls)
+				.enter()
+				.append("button").text(function(d) {return d.text;})
+				.on("click", function(d) { d.click(); })
+				;
+
 		}
 	};
 	var pub = {

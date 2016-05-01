@@ -31,11 +31,16 @@
 		<!--     http://stevesanderson.github.io/fixed-height-layouts-demo/two-columns.html -->
         <div class="left col">
             <div class="header row" id="menubar"></div>
-            <div class="body row scroll-y">
+            <div class="body row">
 				<!-- Not displayed, as it is clicked from javascript when the "Import GPX" menu item is chosen: -->
 				<input type="file" id="files" name="files[]" multiple style="display:none"/>
-				<output id="list"></output>
-				<div id="pointseq-list"></div>
+				<div id="tabs-control"></div>
+				<div class="scroll-y" id="tabs-content">
+					<div class="tab-content selected"  id="pointseq-list"></div>
+					<div class="tab-content" id="file-list">
+						<output id="list"></output>
+					</div>
+				</div>
 			</div>
 			<div class="footer row">
                 Icons go here
