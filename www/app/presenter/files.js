@@ -8,12 +8,15 @@ define( ["model/gpx", "model/pointseq"], function(gpx, pointseq) {
 	}
 	var loadGpxFile = function(file, contents) {
 		//console.log("presenter/files: " + file.name);
-		var gpxData = gpx.parseGpxStr(contents);
-		if (gpxData !== null) {
-			pointseq.addFromGpx(file, gpxData);
+		var gpxObject = gpx.parseGpxStr(contents);
+		if (gpxObject !== null) {
+			//pointseq.addFromGpx(file, gpxObject);
+			gpxObject.getPointSeqs().forEach(function(e) {
+				new pointseq.PointSeq(file, e);
+			});
 		}
 		// TODO - sort this out. It's here just to exercize the code.
-		gpxData.getWaypoints();
+		gpxObject.getWaypoints();
 	};
 
 	var pub = {

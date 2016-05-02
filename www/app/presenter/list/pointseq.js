@@ -18,12 +18,12 @@ define(["app/eventbus", "model/pointseq"], function(eventbus, pointseqModel) {
 
 	function onNewPointSeq(data/*, envelope*/) {
 		//console.log("pointseqList: onNewPointSeq");
-		//var seq = data.pointSeq;
+		//var seq = data.modelObject;
 		view.refresh(pointseqModel.getAll().map(convertPointSeqForView));
 	}
 	function onPointSeqStateChange(data/*, envelope*/) {
 		//console.log("pointseqList: onPointSeqStateChange");
-		view.showState(convertPointSeqForView(data.pointSeq), data.state);
+		view.showState(convertPointSeqForView(data.modelObject), data.state);
 	}
 
 	function init() {

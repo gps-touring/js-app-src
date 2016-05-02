@@ -55,7 +55,7 @@ define(["app/eventbus", "model/markers", "presenter/map/pointseq"], function(eve
 	}
 	function onNewPointSeq(data/*, envelope*/) {
 		//console.log("onNewPointSeq");
-		var seq = data.pointSeq;
+		var seq = data.modelObject;
 		var latLngs = pointseqPresenter.toLeafletLatLngs(seq);
 		// Here, we register eventHandlers with each view. If the model changes state
 		// as a result of handling these events, we will pick up those state changes in onPointSeqStateChange.
@@ -64,7 +64,7 @@ define(["app/eventbus", "model/markers", "presenter/map/pointseq"], function(eve
 	function onPointSeqStateChange(data/*, envelope*/) {
 		//console.log("onPointSeqStateChange");
 
-		data.pointSeq.getUserData("mapView").showState(data.state);
+		data.modelObject.getUserData("mapView").showState(data.state);
 	}
 	function onPointAdd(data/*, envelope*/) {
 		var pt = data.point;
