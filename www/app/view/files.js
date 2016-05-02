@@ -11,6 +11,8 @@ define( ["presenter/files"], function(presenter) {
 			};
 		},
 		init: function() {
+			d3.select("#file-list").append("output").attr("id", "list");
+
 			// Code copied from http://www.html5rocks.com/en/tutorials/file/dndfiles/
 			//
 			function handleFileSelect(evt) {
