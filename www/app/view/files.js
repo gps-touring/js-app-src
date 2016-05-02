@@ -10,8 +10,8 @@ define( ["d3", "presenter/files"], function(d3, presenter) {
 				presenter.loadGpxFile(file, contents);
 			};
 		},
-		init: function() {
-			d3.select("#file-list").append("output").attr("id", "list");
+		init: function(tabId) {
+			d3.select("#" + tabId).append("output").attr("id", "list");
 
 			// Code copied from http://www.html5rocks.com/en/tutorials/file/dndfiles/
 			//

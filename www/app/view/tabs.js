@@ -45,7 +45,7 @@ define( ["d3", "presenter/tabs", "view/files", "view/list/pointseq"], function(d
 
 			// Initialise the view (content) for each tab:
 			tabControls.forEach(function(e) {
-				e.view.init();
+				e.view.init(e.contentId);
 			});
 		}
 	};

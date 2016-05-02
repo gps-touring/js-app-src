@@ -1,9 +1,11 @@
 define( ["d3", "presenter/list/pointseq"], function(d3, presenter) {
 	"use strict";
 
+	// TODO - perhaps we can use exactly the same code for the list of files?
+	//        configured by the array of columns, provided in settings?
 	var settings;
-	function init() {
-		d3.select("#pointseq-list").append("table").classed({"pointseq-table": true})
+	function init(tabId) {
+		d3.select("#" + tabId).append("table").classed({"pointseq-table": true})
 			.append("tbody").classed({"pointseq-tbody": true});
 	}
 	function matchKey(d) { return d.id; }
@@ -33,7 +35,8 @@ define( ["d3", "presenter/list/pointseq"], function(d3, presenter) {
 			d.modelObject.setHovered(false);
 		});
 
-		var cols = rows.selectAll("td")
+		// Populate the columns of each row:
+		rows.selectAll("td")
 			.data(function(row) {
 				return columns.map(function(c) {
 					//console.log(c + row[c]);
