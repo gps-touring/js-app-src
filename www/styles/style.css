@@ -15,10 +15,32 @@ body { height: 100%; margin: 0; padding: 0 }
 .body.row { top: 35px; bottom: 25px; }
 .footer.row { height: 25px; bottom: 0; line-height: 25px; }
 
-#tabs-control { position: absolute; left:0; right: 0; top: 0; height: 50px; }
+#tabs-control { position: absolute; left:0; right: 0; top: 0; height: 50px; line-height:50px;}
 #tabs-content { position: absolute; left:0; right: 0; top: 50px; bottom: 0; }
 .tab-content { position: absolute; left:0; right: 0; top: 0; display: none; }
 .tab-content.selected { display: block; }
+
+/* CSS for tabs copied from https://css-tricks.com/better-tabs-with-round-out-borders/
+ */
+.tabrow {
+	text-align: center;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	line-height: 24px;
+}
+.tabrow li {
+	margin: 0 10px;
+	padding: 0 10px;
+	border: 1px solid #AAA;
+	background: #ECECEC;
+	display: inline-block;
+	cursor: pointer;
+}
+.tabrow li.selected {
+  background: #FFF;
+  color: #000;
+}
 
 /* There are some style 'options' that can be set within leaflet. See http://leafletjs.com/reference.html#path-options
  * However, the correspondence between those and the CSS properties required here is unclear!

@@ -15,9 +15,17 @@ define( ["d3", "presenter/menu"], function(d3, presenter) {
 		d3.select("#file-list").classed({selected: true});
 	}
 	var tabControls = [
-	{text: "Routes", click: showRoutes},
-	{text: "Files", click: showFiles}
+	{text: "Routes", contentId: "#pointseq-list", click: showRoutes},
+	{text: "Files", contentId: "#file-list", click: showFiles}
 	];
+	function matchKey(d) { return d.contentId; }
+	function selectTab(tabControl) {
+		console.log("selectTab");
+		d3.selectAll(".tab-content").data(tabControls, matchKey)
+			//.classed("selected", function(d) { return d.contentId === tabControl.contentId; })
+			.classed("selected", true)
+			;
+	}
 	var priv = {
 		init: function() {
 			var i, j, selection;
@@ -36,10 +44,23 @@ define( ["d3", "presenter/menu"], function(d3, presenter) {
 
 			}
 
-			d3.select("#tabs-control").selectAll("button")
-				.data(tabControls)
+			//d3.selectAll(".tab-content").data(tabControls, matchKey)
+				//.classed("selected", true)
+				//;
+
+
+			var ul = d3.select("#tabs-control").append("ul").classed("tabrow", true);
+
+			//d3.select("#tabs-control").selectAll("button")
+			ul.selectAll("li")
+				.data(tabControls, matchKey)
 				.enter()
-				.append("button").text(function(d) {return d.text;})
+				.append("li")
+				.classed({"tab-selector": true})
+				.attr("href", "#")
+				.text(function(d) {return d.text;})
+				//.on("click", function(d) { selectTab(d); })
+				//.on("click", selectTab )
 				.on("click", function(d) { d.click(); })
 				;
 
