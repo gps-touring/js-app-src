@@ -1,4 +1,4 @@
-define( ["presenter/files"], function(presenter) {
+define( ["d3", "presenter/files"], function(d3, presenter) {
 	"use strict";
 
 	var settings;

@@ -1,53 +1,52 @@
-define( ["d3", "presenter/tabs"], function(d3, presenter) {
+define( ["d3", "presenter/tabs", "view/files", "view/list/pointseq"], function(d3, presenter, filesView, routesView) {
 	"use strict";
 
 	var settings;
 
-	// TODO - move all this tab control stuff to a file of its own.
-	function showRoutes() {
-		console.log("showRoutes");
-		d3.select("#pointseq-list").classed({selected: true});
-		d3.select("#file-list").classed({selected: false});
-	}
-	function showFiles() {
-		console.log("showFiles");
-		d3.select("#pointseq-list").classed({selected: false});
-		d3.select("#file-list").classed({selected: true});
-	}
 	var tabControls = [
-	{text: "Routes", contentId: "#pointseq-list", click: showRoutes},
-	{text: "Files", contentId: "#file-list", click: showFiles}
+		{view: routesView, text: "Routes", contentId: "pointseq-list", selected: true},
+		{view: filesView, text: "Files", contentId: "file-list"}
 	];
 	function matchKey(d) { return d.contentId; }
 	function selectTab(tabControl) {
 		console.log("selectTab");
-		d3.selectAll(".tab-content").data(tabControls, matchKey)
-			//.classed("selected", function(d) { return d.contentId === tabControl.contentId; })
-			.classed("selected", true)
+		d3.select("#tabs-control").select("ul").selectAll("li")
+			.data(tabControls, matchKey)
+			.classed("selected", function(d) { return matchKey(d) === matchKey(tabControl); })
+			;
+		d3.select("#tabs-content").selectAll("div")
+			.data(tabControls, matchKey)
+			.classed("selected", function(d) { return matchKey(d) === matchKey(tabControl); })
 			;
 	}
 	var priv = {
 		init: function() {
-
-			//d3.selectAll(".tab-content").data(tabControls, matchKey)
-				//.classed("selected", true)
-				//;
-
+			// Set up the tab controllers (the tabs you click on)
 			var ul = d3.select("#tabs-control").append("ul").classed("tabrow", true);
 
-			//d3.select("#tabs-control").selectAll("button")
 			ul.selectAll("li")
 				.data(tabControls, matchKey)
 				.enter()
 				.append("li")
-				.classed({"tab-selector": true})
+				.classed({"tab-selector": true, selected: function(d) { return d.selected; }})
 				.attr("href", "#")
-				.text(function(d) {return d.text;})
-				//.on("click", function(d) { selectTab(d); })
-				//.on("click", selectTab )
-				.on("click", function(d) { d.click(); })
+				.text(function(d) { return d.text; })
+				.on("click", selectTab )
 				;
 
+			// Set up the content of each tab.
+			d3.select("#tabs-content").selectAll("div")
+				.data(tabControls, matchKey)
+				.enter()
+				.append("div")
+				.attr("id", function(d) { return d.contentId; })
+				.classed({"tab-content": true, selected: function(d) { return d.selected; }})
+				;
+
+			// Initialise the view (content) for each tab:
+			tabControls.forEach(function(e) {
+				e.view.init();
+			});
 		}
 	};
 	var pub = {
