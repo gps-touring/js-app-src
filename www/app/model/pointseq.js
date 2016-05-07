@@ -12,6 +12,7 @@ define( ["model/gpx", "model/userdata", "model/mouseStates", "app/eventbus"], fu
 			distance: null
 		};
 		Object.defineProperties(this, {
+			// TODO - remove the source property.
 			source: { value: theSource, enumerable: true },
 			points: {value: theSeq.points, enumerable: true },
 			id: {value: modelObjects.length, enumerable: true },

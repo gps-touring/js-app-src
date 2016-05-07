@@ -4,9 +4,10 @@ define( ["model/userdata", "model/mouseStates", "app/eventbus"], function(userda
 	var eventPrefix = "File";
 	var modelObjects = [];
 
-	var File = function(theSource, theSeq) {
+	var File = function(theSource, gpxObject) {
 		Object.defineProperties(this, {
 			source: { value: theSource, enumerable: true },
+			gpxObject: { value: gpxObject, enumerable: true },
 			id: {value: modelObjects.length, enumerable: true },
 			// userdata: property created if setUserData is called.
 		});
@@ -35,7 +36,8 @@ define( ["model/userdata", "model/mouseStates", "app/eventbus"], function(userda
 	}
 
 	var pub = {
-		getAll: getAll
+		getAll: getAll,
+		File: File
 	};
 	return pub;
 });

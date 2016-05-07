@@ -1,7 +1,10 @@
-define( ["app/eventbus", "model/gpxParse", "model/point"], function(eventbus, gpxParse, point) {
+define( ["app/eventbus", "model/gpxParse", "model/point", "model/pointseq"], function(eventbus, gpxParse, point, pointseq) {
 	"use strict";
 
 	function convertGpxWaypointsToModelPoints(gpxWpts) {
+		if (!gpxWpts) {
+			return [];
+		}
 		return gpxWpts.map(function(e) {
 			// We only want to pass the gpx wpt data (e) into the Point if there is more in it than just the
 			// lat, lon, and (optionally) ele properties.
@@ -10,6 +13,9 @@ define( ["app/eventbus", "model/gpxParse", "model/point"], function(eventbus, gp
 			var wptHasAdditionalInfo = len > 3 || (e.ele === undefined && len > 2);
 			var gpxWpt = wptHasAdditionalInfo ? e : undefined;
 			var pt = new point.Point(e.lat, e.lon, e.ele, {gpxWpt: gpxWpt});
+			// TODO - for consistecy with other model objects, 
+			//        the Point should publish it's own existence itself.
+			//        Need to check any other places where Point.add is published.
 			if (wptHasAdditionalInfo) {
 				console.log("Waypoint with extra data:");
 				console.log(e);
@@ -31,62 +37,40 @@ define( ["app/eventbus", "model/gpxParse", "model/point"], function(eventbus, gp
 		});
 	}
 
-	// We define a GpxObject in order to associate some methods with the parsedGpx:
-	var GpxObject = function(parsedGpx) {
-		this.gpx = parsedGpx;
-		this.getPointSeqs = function() {
-			var i, j, res = [];
-			// console.log(this.gpx);
-			// Sequences of Waypoints can come from gpx/trk/trkseg ...
-			if (this.gpx.trk) {
-				for (i = 0; i < this.gpx.trk.length; ++i) {
-					if (this.gpx.trk[i].trkseg) {
-						for (j = 0; j < this.gpx.trk[i].trkseg.length; ++j) {
-							// TODO - convert the sequence (and each point) into a standard model object.
+	var eventPrefix = "Gpx";
+	var modelObjects = [];
 
-							res.push({
-								points: convertGpxWaypointsToModelPoints(this.gpx.trk[i].trkseg[j].trkpt),
-								gpxTrk: this.gpx.trk[i]
-							});
-						}
-					}
-				}
-			}
-			// ... or from gpx/rte
-			if (this.gpx.rte) {
-				for (i = 0; i < this.gpx.rte.length; ++i) {
-					// TODO - convert the sequence (and each point) into a standard model object.
-					res.push({
-						points: convertGpxWaypointsToModelPoints(this.gpx.rte[i].rtept),
-						gpxRte: this.gpx.rte[i]
-					});
-				}
-			}
-			return res;
-		};
-		this.getWaypoints = function() {
-			var i, j, res = [];
-			if (this.gpx.wpt) {
-				res.push({
-					points: convertGpxWaypointsToModelPoints(this.gpx.wpt)
+	// Construct a Gpx object from a string:
+	function Gpx(file, str) {
+		var parsed = gpxParse.parseXmlStr(str);
+		var pointSeqs = [];
+		var waypoints = [];
+		if (parsed.trk) {
+			parsed.trk.forEach( function(trk) {
+				trk.trkseg.forEach( function(trkseg) {
+					pointSeqs.push(new pointseq.PointSeq(file, {
+						points: convertGpxWaypointsToModelPoints(trkseg.trkpt),
+						gpxTrk: trk
+					}));
 				});
-			}
-			return res;
-		};
-	};
-
-	function parseGpxStr(str) {
-		// Firstly, we get the result of parsing the XML according to the GPX specification:
-		var res = gpxParse.parseXmlStr(str);
-
-		// Secondly, we turn it into an object that is accessible using our model's interface:
-		if (res !== null) {
-			return new GpxObject(res);
+			});
 		}
-		return res;
+		if (parsed.rte) {
+			parsed.rte.forEach( function(rte) {
+				pointSeqs.push(new pointseq.PointSeq(file, {
+					points: convertGpxWaypointsToModelPoints(rte.rtept),
+					gpxRte: rte
+				}));
+			});
+		}
+		waypoints = convertGpxWaypointsToModelPoints(parsed.wpt);
+		Object.defineProperties(this, {
+			pointSeqs: { value: pointSeqs, enumerable: true},
+			waypoints: { value: waypoints, enumerable: true}
+		});
 	}
 	var pub = {
-		parseGpxStr: parseGpxStr
+		Gpx: Gpx
 	};
 	return pub;
 });
