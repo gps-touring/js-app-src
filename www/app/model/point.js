@@ -1,6 +1,18 @@
 define( ["model/userdata"], function(userdata) {
 	"use strict";
 
+	// TODO: move this somewhere better!
+	if (!String.prototype.encodeHTML) {
+		String.prototype.encodeHTML = function () {
+			return this.replace(/&/g, '&amp;')
+			.replace(/</g, '&lt;')
+			.replace(/>/g, '&gt;')
+			.replace(/"/g, '&quot;')
+			.replace(/'/g, '&apos;');
+		};
+	}
+	
+
 	// Point is a location on the Earth in latitude and longitude, and includes (optionally) an elevation.
 	// Other optional properties:
 	//
@@ -23,6 +35,13 @@ define( ["model/userdata"], function(userdata) {
 	}
 	Point.prototype.dump = function() {
 		return "lat: " + this.lat + ", lng: " + this.lng + ", ele: " + this.ele;
+	};
+	Point.prototype.toGpx = function() {
+		// TODO - check if this.gpxWpt is not null, and add more fields into the GPX, not just name
+		//        This is a temp hack to dump out campsites from archies GPX files.
+		return "<wpt lat=\"" + this.lat + "\" lon=\'" + this.lng + "\">" + 
+			"<name>" + this.gpxWpt.name.encodeHTML() + "</name>" +
+			"</wpt>";
 	};
 	// We don't define userdata as a property of Point, because we want it to be created on demand,
 	// so it does not take up unnecessary space in this highly numerous object.

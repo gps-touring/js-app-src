@@ -24,7 +24,7 @@ define(["leaflet", "leafletAwesomeMarkers", "leaflet.markercluster"], function(l
 		this.marker = leaflet.marker(latlng, {icon: icon, title: hovertext});
 		this.marker.bindPopup(popuptext);
 
-		// Add the event handlers that are defined in model/pointseq:
+		// Add the event handlers that are defined in presenter/map:
 		Object.keys(eventHandlers).forEach(function(k) {
 			this.marker.on(k, eventHandlers[k]);
 		}, this);
