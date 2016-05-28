@@ -72,7 +72,16 @@ define(["app/eventbus", "model/markers", "presenter/map/pointseq"], function(eve
 		// options properties are the options avaiable for Leaflet.awesome-markers.
 		// See https://github.com/lvoogdt/Leaflet.awesome-markers
 
-		var eventHandlers = {};
+		// Event handlers for the leaflet Marker:
+		var eventHandlers = {
+			click: function() {
+				//console.log("click Marker");
+				//console.log(pt.gpxWpt);
+				// TODO - do better than just loggin the GPX to console, like adding it to a set of waypoints that have been selected,
+				//        and having an action to generate an entire GPX file from all selected waypoints.
+				console.log(pt.toGpx());
+			}
+		};
 		/*
 		// Test interaction between click event handlers and bound Popups:
 		var eventHandlers = {click: function(e) { 
