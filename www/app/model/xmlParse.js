@@ -148,7 +148,12 @@ define([], function() {
 	};
 	var parseElement = function(doc, xmlSpec, elementSpec) {
 		if (textParser[elementSpec.type]) {
-			return parseText(doc.firstChild.wholeText.toString(), elementSpec);
+			if (doc.firstChild) {
+				return parseText(doc.firstChild.wholeText.toString(), elementSpec);
+			}
+			else {
+				return "";
+			}
 		}
 		else if (xmlSpec[elementSpec.type]) {
 			return parseType(doc, xmlSpec, xmlSpec[elementSpec.type]);
