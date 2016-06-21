@@ -64,6 +64,18 @@ define( ["app/eventbus", "model/gpxParse", "model/point", "model/pointseq"], fun
 			});
 		}
 		waypoints = convertGpxWaypointsToModelPoints(parsed.wpt);
+
+		// TODO - where to call the simplify function? prob not here. This is for testing.
+		var n = pointSeqs.length;
+		var i;
+		var simplified;
+		for (i = 0; i < n; ++i) {
+			simplified = pointSeqs[i].simplify();
+			if (simplified) {
+				pointSeqs.push(simplified);
+			}
+		}
+
 		Object.defineProperties(this, {
 			pointSeqs: { value: pointSeqs, enumerable: true},
 			waypoints: { value: waypoints, enumerable: true}
