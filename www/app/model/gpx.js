@@ -1,4 +1,4 @@
-define( ["app/eventbus", "model/gpxParse", "model/point", "model/pointseq"], function(eventbus, gpxParse, point, pointseq) {
+define( ["app/eventbus", "model/gpxParse", "model/point", "model/pointseq", "model/route"], function(eventbus, gpxParse, point, pointseq, route) {
 	"use strict";
 
 	function convertGpxWaypointsToModelPoints(gpxWpts) {
@@ -37,46 +37,42 @@ define( ["app/eventbus", "model/gpxParse", "model/point", "model/pointseq"], fun
 		});
 	}
 
-	var eventPrefix = "Gpx";
+	var eventPrefix = "Gpx";	// obsolete?
 	var modelObjects = [];
 
 	// Construct a Gpx object from a string:
 	function Gpx(file, str) {
 		var parsed = gpxParse.parseXmlStr(str);
-		var pointSeqs = [];
+		var routes = [];
+		var pointSeqs = [];	// TODO - make this obsolete, now that we have routes.
 		var waypoints = [];
+		var ptSeq;
 		if (parsed.trk) {
 			parsed.trk.forEach( function(trk) {
 				trk.trkseg.forEach( function(trkseg) {
-					pointSeqs.push(new pointseq.PointSeq(file, {
+					ptSeq = new pointseq.PointSeq(file, {
 						points: convertGpxWaypointsToModelPoints(trkseg.trkpt),
 						gpxTrk: trk
-					}));
+					});
+					routes.push(new route.Route(ptSeq));
+					pointSeqs.push(ptSeq);
 				});
 			});
 		}
 		if (parsed.rte) {
 			parsed.rte.forEach( function(rte) {
-				pointSeqs.push(new pointseq.PointSeq(file, {
+				ptSeq = new pointseq.PointSeq(file, {
 					points: convertGpxWaypointsToModelPoints(rte.rtept),
 					gpxRte: rte
-				}));
+				});
+				routes.push(new route.Route(ptSeq));
+				pointSeqs.push(ptSeq);
 			});
 		}
 		waypoints = convertGpxWaypointsToModelPoints(parsed.wpt);
 
-		// TODO - where to call the simplify function? prob not here. This is for testing.
-		var n = pointSeqs.length;
-		var i;
-		var simplified;
-		for (i = 0; i < n; ++i) {
-			simplified = pointSeqs[i].simplify();
-			if (simplified) {
-				pointSeqs.push(simplified);
-			}
-		}
-
 		Object.defineProperties(this, {
+			routes: { value: routes, enumerable: true},
 			pointSeqs: { value: pointSeqs, enumerable: true},
 			waypoints: { value: waypoints, enumerable: true}
 		});
