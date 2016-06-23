@@ -1,18 +1,11 @@
+// TODO - this should really be called view/list/route,
+//        and allow the user to choose between the original pointseq, and the simplified pointseq.
+//
 define( ["view/table", "presenter/list/pointseq"], function(table, presenter) {
 	"use strict";
 
-	var settings;
-
-	var table;
 	function init(tabId) {
-		table = new table.Table({
-			parentId: tabId,
-			matchKey: function(d) { return d.id; },
-			columns: ["id", "points", "distance"]
-		});
-		// NOTE unusual parameter passed to registerView, and the fact that
-		//      it is being called in a non-standard place.
-		settings = presenter.registerView(table);
+		presenter.createTable(table, tabId)
 	}
 	var pub = {
 		init: init

@@ -3,7 +3,7 @@
 //    - a simplified sequence, removing unnecessary points.
 // These are contained in a Route object.
 
-define( ["model/pointseq"], function(pointseq) {
+define( ["model/pointseq", "app/eventbus"], function(pointseq, eventbus) {
 	"use strict";
 
 	var eventPrefix = "Route";
