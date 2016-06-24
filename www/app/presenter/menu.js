@@ -1,4 +1,4 @@
-define( ["jszip", "FileSaver"], function(JSZip, fs) {
+define( ["model/state", "jszip", "FileSaver"], function(state, JSZip, fs) {
 	"use strict";
 
 	var view;
@@ -40,7 +40,16 @@ define( ["jszip", "FileSaver"], function(JSZip, fs) {
 				},
 				{
 					text: "View",
-					items: []
+					items: [
+						//{ text: "Original GPX routes", click: state.viewRoutes(state.viewRouteEnum.original) },
+						//{ text: "Simplified GPX routes", click: state.viewRoutes(state.viewRouteEnum.original) }
+
+						//{ text: "Original GPX routes", click: state.viewOriginalRoutes },
+						//{ text: "Simplified GPX routes", click: state.viewSimplifiedRoutes }
+
+						{ text: "Original routes", click: state.changer("viewRoutes", "original")},
+						{ text: "Simplified routes", click: state.changer("viewRoutes", "simplified") }
+					]
 				},
 				{
 					text: "Help",
