@@ -17,8 +17,8 @@ define( ["app/eventbus", "model/gpxParse", "model/point", "model/pointseq", "mod
 			//        the Point should publish it's own existence itself.
 			//        Need to check any other places where Point.add is published.
 			if (wptHasAdditionalInfo) {
-				console.log("Waypoint with extra data:");
-				console.log(e);
+				//console.log("Waypoint with extra data:");
+				//console.log(e);
 				// icon taken from http://fortawesome.github.io/Font-Awesome/icons/
 				eventbus.publish({
 					topic: "Point.add",

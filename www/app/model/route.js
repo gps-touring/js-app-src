@@ -3,7 +3,7 @@
 //    - a simplified sequence, removing unnecessary points.
 // These are contained in a Route object.
 
-define( ["model/pointseq", "app/eventbus"], function(pointseq, eventbus) {
+define( ["model/state", "app/eventbus"], function(state, eventbus) {
 	"use strict";
 
 	var eventPrefix = "Route";
@@ -21,14 +21,36 @@ define( ["model/pointseq", "app/eventbus"], function(pointseq, eventbus) {
 
 		eventbus.publish({topic: eventPrefix + ".new", data: {modelObject: this}});
 	};
+	Route.prototype.getPointSeq = function(ptSeqType, flag) {
+		switch (ptSeqType) {
+			case state.routeTypeEnum.original:
+				return flag ? this.original : this.simplified;
+			case state.routeTypeEnum.simplified:
+				return flag ? this.simplified : this.original;
+			default:
+				console.assert(false, "model/route: Unknown ptSeqType " + ptSeqType);
+				return null;
+		}
+	};
 
 	function getAll() {
 		return modelObjects;
 	}
+	function getAllPointSeqs(ptSeqType, flag) {
+		return modelObjects.map(function(route) { return route.getPointSeq(ptSeqType, flag); });
+	}
+	function getAllVisiblePointSeqs() {
+		return getAllPointSeqs(state.getViewRoutesType(), true);
+	}
+	function getAllInvisiblePointSeqs() {
+		return getAllPointSeqs(state.getViewRoutesType(), false);
+	}
 
 	var pub = {
 		Route: Route,
-		getAll: getAll
+		getAll: getAll,
+		getAllVisiblePointSeqs: getAllVisiblePointSeqs,
+		getAllInvisiblePointSeqs: getAllInvisiblePointSeqs
 	};
 	return pub;
 });

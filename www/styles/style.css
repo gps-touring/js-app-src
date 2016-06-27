@@ -59,6 +59,9 @@ tr.selected {
 .route.hovered {
 	stroke: #20EE00;
 }
+.route.hidden {
+	visibility: hidden;
+}
 tr.hovered {
 	background-color: #20EE00;
 }

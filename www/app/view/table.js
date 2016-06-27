@@ -12,10 +12,12 @@ define( ["d3"], function(d3) {
 		//console.log(seqs);
 
 		// TODO - make this function update the values for rows that already exist in the table.
-		//        Currently, it does only the enter() processing, for missing rows.
+		//        Example: http://bl.ocks.org/LeeMendelowitz/11383724
+		//        Currently, it does only the enter() processing, for missing rows,
+		//        and the exit() processing to remove rows that are in the table, but not in the data.
 		var rows = this.tbody.selectAll("tr")
-			.data(seqs, this.matchKey)
-			.enter()
+			.data(seqs, this.matchKey);
+		rows.enter()
 			.append("tr")
 			.attr("title", function(d) { return d.title; });
 
@@ -48,6 +50,8 @@ define( ["d3"], function(d3) {
 
 		tds.html(function(d) { return d.value; })
 			;
+		// Remove rows that are in the table, but not in the data:
+		rows.exit().remove();
 	}
 	Table.prototype.showState = function(wpt, state) {
 		// Here we run a D3 update on the single item of data in the array [wpt]

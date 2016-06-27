@@ -1,4 +1,4 @@
-define(["app/eventbus", "model/markers", "presenter/map/pointseq"], function(eventbus, markerModel, pointseqPresenter) {
+define(["app/eventbus", "model/markers", "presenter/map/pointseq", "model/route"], function(eventbus, markerModel, pointseqPresenter, routeModel) {
 	"use strict";
 
 	var view;
@@ -95,6 +95,15 @@ define(["app/eventbus", "model/markers", "presenter/map/pointseq"], function(eve
 	function onPointRemove(data/*, envelope*/) {
 		data.point.getUserData("mapView").destroy();
 	}
+	function onViewRoutesStateChange(/*data, envelope*/) {
+		routeModel.getAllVisiblePointSeqs().forEach( function(ptSeq) {
+			// "mapView" userData is the view/map/PointSeq object.
+			ptSeq.getUserData("mapView").setVisibility(true);
+		});
+		routeModel.getAllInvisiblePointSeqs().forEach( function(ptSeq) {
+			ptSeq.getUserData("mapView").setVisibility(false);
+		});
+	}
 
 	function init() {
 		// subscribe to events published by the model:
@@ -102,6 +111,7 @@ define(["app/eventbus", "model/markers", "presenter/map/pointseq"], function(eve
 		eventbus.subscribe({topic: "PointSeq.stateChange", callback: onPointSeqStateChange});
 		eventbus.subscribe({topic: "Point.add", callback: onPointAdd});
 		eventbus.subscribe({topic: "Point.remove", callback: onPointRemove});
+		eventbus.subscribe({topic: "StateChange.viewRoutes", callback: onViewRoutesStateChange});
 	}
 	var pub = {
 		registerView: registerView,

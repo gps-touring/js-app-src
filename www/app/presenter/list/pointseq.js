@@ -1,6 +1,6 @@
 // TODO - this should really be called presenter/list/route,
 //        and get its data from model/route.
-define(["app/eventbus", "model/pointseq"], function(eventbus, pointseqModel) {
+define(["app/eventbus", "model/state", "model/route", "model/pointseq"], function(eventbus, state, routeModel, pointseqModel) {
 	"use strict";
 
 	// Our view is an instance of a generic Table object:
@@ -25,15 +25,16 @@ define(["app/eventbus", "model/pointseq"], function(eventbus, pointseqModel) {
 			chk: "<label><input type=\"checkbox\" />Chk?</label>"
 		};
 	}
-	function onNewPointSeq(data/*, envelope*/) {
-		table.refresh(pointseqModel.getAll().map(convertPointSeqForTable));
+	function refreshTable() {
+		table.refresh(routeModel.getAllVisiblePointSeqs().map(convertPointSeqForTable));
 	}
 	function onPointSeqStateChange(data/*, envelope*/) {
 		table.showState(convertPointSeqForTable(data.modelObject), data.state);
 	}
 	function init() {
 		// subscribe to events published by the model:
-		eventbus.subscribe({topic: "PointSeq.new", callback: onNewPointSeq});
+		eventbus.subscribe({topic: "Route.new", callback: refreshTable});
+		eventbus.subscribe({topic: "StateChange.viewRoutes", callback: refreshTable});
 		eventbus.subscribe({topic: "PointSeq.stateChange", callback: onPointSeqStateChange});
 	}
 	var pub = {

@@ -40,6 +40,15 @@ define(["leaflet"], function(leaflet) {
 			}
 		}
 	};
+	PointSeq.prototype.setVisibility = function(vis) {	// vis is boolean
+		var cssClass = "hidden";
+		if (vis && leaflet.DomUtil.hasClass(this.polyline._path, cssClass)) {
+			leaflet.DomUtil.removeClass(this.polyline._path, cssClass);
+		}
+		if (!vis && !leaflet.DomUtil.hasClass(this.polyline._path, cssClass)) {
+			leaflet.DomUtil.addClass(this.polyline._path, cssClass);
+		}
+	};
 
 	var pub = {
 		PointSeq: PointSeq

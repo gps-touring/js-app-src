@@ -41,14 +41,8 @@ define( ["model/state", "jszip", "FileSaver"], function(state, JSZip, fs) {
 				{
 					text: "View",
 					items: [
-						//{ text: "Original GPX routes", click: state.viewRoutes(state.viewRouteEnum.original) },
-						//{ text: "Simplified GPX routes", click: state.viewRoutes(state.viewRouteEnum.original) }
-
-						//{ text: "Original GPX routes", click: state.viewOriginalRoutes },
-						//{ text: "Simplified GPX routes", click: state.viewSimplifiedRoutes }
-
-						{ text: "Original routes", click: state.changer("viewRoutes", "original")},
-						{ text: "Simplified routes", click: state.changer("viewRoutes", "simplified") }
+						{ text: "Original routes", click: state.viewOriginalRoutes },
+						{ text: "Simplified routes", click: state.viewSimplifiedRoutes }
 					]
 				},
 				{
