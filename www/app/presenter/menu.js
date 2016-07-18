@@ -11,9 +11,6 @@ define( ["model/state", "model/zipfile"], function(state, zipFile) {
 			inputElem.click();
 		}
 	}
-	//function downloadZip() {
-		//zipFile.downloadZip();
-	//}
 
 	function registerView(v) {
 		view = v;
