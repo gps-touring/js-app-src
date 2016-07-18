@@ -1,6 +1,6 @@
 define(
-	["app/console", "d3", "app/view", "app/debug"],
-	function(myconsole, d3, view, debugging){
+	["app/console", "d3", "app/view", "app/debug", "model/btree/test"],
+	function(myconsole, d3, view, debugging, btreetest){
 	"use strict";
 
 	// We're using the Definitive Module Pattern:
@@ -14,6 +14,9 @@ define(
 			view.init();
 
 			// Each view will ensure that the code for its presenter is loaded.
+
+			// Tests
+			btreetest.test();
 		}
 	};
 	var pub = {
