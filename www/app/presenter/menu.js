@@ -1,4 +1,4 @@
-define( ["model/state", "jszip", "FileSaver"], function(state, JSZip, fs) {
+define( ["model/state", "model/zipfile"], function(state, zipFile) {
 	"use strict";
 
 	var view;
@@ -11,21 +11,9 @@ define( ["model/state", "jszip", "FileSaver"], function(state, JSZip, fs) {
 			inputElem.click();
 		}
 	}
-	function downloadZip() {
-		// Using https://stuk.github.io/jszip/ and https://github.com/eligrey/FileSaver.js
-		// See https://stuk.github.io/jszip/documentation/examples.html
-		// See https://stuk.github.io/jszip/documentation/howto/write_zip.html
-		var zip = new JSZip();
-		zip.file("foo.txt", "foo\n");
-		zip.file("bar/foo.txt", "barfoo\n");
-		zip.generateAsync({type: "blob"})
-		.then(function (blob) {
-			var filename = "gps-touring-test.zip";
-			console.log("saving zip as " + filename);
-			// TODO - error handling and reporting
-			saveAs(blob, filename);
-		});
-	}
+	//function downloadZip() {
+		//zipFile.downloadZip();
+	//}
 
 	function registerView(v) {
 		view = v;
@@ -35,7 +23,7 @@ define( ["model/state", "jszip", "FileSaver"], function(state, JSZip, fs) {
 					text: "File",
 					items: [
 						{ text: "Import GPX", click: importGpx },
-						{ text: "Download zip", click: downloadZip }
+						{ text: "Download zip", click: zipFile.downloadZip }
 					]
 				},
 				{
