@@ -77,6 +77,28 @@ define( ["app/eventbus", "model/gpxParse", "model/point", "model/pointseq", "mod
 			waypoints: { value: waypoints, enumerable: true}
 		});
 	}
+	Gpx.prototype.simplifyRoutes = function() {
+		// We build up an array of PointSeq objects.
+		// If the original GPX file had consecutive (end of one matched beginning of next) routes,
+		// then these will be merged into a single pointSeq. 
+		// This is common for the separate <trkseg> elements of a <trk>.
+		var ptSeqs = [];
+		var ptSeq = []; // Working space to merge consecutive routes
+		var prevEnd = {lat: null, lng: null };	// Keep track of previous end point.
+		// TODO - finish this!
+		console.log("model/gpx: simplifyRoutes() - work in progress.");
+		this.pointSeqs.forEach(function(e) {
+			if (e.points[0].lat === prevEnd.lat && e.points[0].lng === prevEnd.lng) {
+				ptSeq = ptSeq.concat(e.points);
+			}
+			else {
+				// 1. create new simplified PointSeq from ptSeq and add it to ptSeqs - unless it's empty
+				// 2. Re-initialize ptSeq from e.
+			}
+		});
+		// 3. create new simplified PointSeq from ptSeq and add it to ptSeqs - unless it's empty
+		return ptSeqs;
+	};
 	var pub = {
 		Gpx: Gpx
 	};

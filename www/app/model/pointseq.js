@@ -13,6 +13,7 @@ define( ["util/xml", "model/gpx", "model/lineSeg", "model/userdata", "model/mous
 		};
 		Object.defineProperties(this, {
 			// TODO - remove the source property.
+			// TODO - remove the gpxRte and gpxTrk properties too.
 			source: { value: theSource, enumerable: true },
 			points: {value: theSeq.points, enumerable: true },
 			id: {value: modelObjects.length, enumerable: true },
