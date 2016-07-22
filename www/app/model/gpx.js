@@ -37,7 +37,6 @@ define( ["app/eventbus", "model/gpxParse", "model/point", "model/pointseq", "mod
 		});
 	}
 
-	var eventPrefix = "Gpx";	// obsolete?
 	var modelObjects = [];
 
 	// Construct a Gpx object from a string:
@@ -50,7 +49,7 @@ define( ["app/eventbus", "model/gpxParse", "model/point", "model/pointseq", "mod
 		if (parsed.trk) {
 			parsed.trk.forEach( function(trk) {
 				trk.trkseg.forEach( function(trkseg) {
-					ptSeq = new pointseq.PointSeq(file.name, {
+					ptSeq = new pointseq.PointSeq(pointseq.typeEnum.gpx, file.name, {
 						points: convertGpxWaypointsToModelPoints(trkseg.trkpt)
 					});
 					routes.push(new route.Route(ptSeq));
@@ -60,7 +59,7 @@ define( ["app/eventbus", "model/gpxParse", "model/point", "model/pointseq", "mod
 		}
 		if (parsed.rte) {
 			parsed.rte.forEach( function(rte) {
-				ptSeq = new pointseq.PointSeq(file.name, {
+				ptSeq = new pointseq.PointSeq(pointseq.typeEnum.gpx, file.name, {
 					points: convertGpxWaypointsToModelPoints(rte.rtept)
 				});
 				routes.push(new route.Route(ptSeq));
@@ -76,6 +75,8 @@ define( ["app/eventbus", "model/gpxParse", "model/point", "model/pointseq", "mod
 		});
 	}
 	Gpx.prototype.simplifyRoutes = function() {
+		// TODO - createSimplified probably replaces all of what follows.
+		pointseq.createSimplified(this.pointSeqs);
 		// We build up an array of PointSeq objects.
 		// If the original GPX file had consecutive (end of one matched beginning of next) routes,
 		// then these will be merged into a single pointSeq. 

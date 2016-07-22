@@ -1,17 +1,27 @@
-define( ["util/xml", "model/gpx", "model/lineSeg", "model/userdata", "model/mouseStates", "app/eventbus"], function(xml, gpx, lineSeg, userdata, mouseStates, eventbus) {
+define( ["util/xml", "model/lineSeg", "model/userdata", "model/mouseStates", "app/eventbus"], function(xml, lineSeg, userdata, mouseStates, eventbus) {
 	"use strict";
 
 	var eventPrefix = "PointSeq";
+
+	// There are different kinds of PointSeq, some of which are derived from others.
+	// gpx - created directly from a GPX file
+	// simplified - derived from gpx, but remove unnecessary points, and lat/lng precision reduced.
+	var typeEnum = Object.freeze({
+		gpx: "gpx",
+		simplified: "simplified"
+	});
+	
 
 	var modelObjects = [];
 	// Waypoint sequences represent routes (or tracks).
 	// A Sequence of waypoints is a core part of the model: it is what defines a section of a route.
 
-	var PointSeq = function(name, theSeq) {
+	var PointSeq = function(type, name, theSeq) {
 		var cache = {
 			distance: null
 		};
 		Object.defineProperties(this, {
+			type: { value: type, enumerable: true },
 			name: { value: name, enumerable: true },
 			points: {value: theSeq.points, enumerable: true },
 			id: {value: modelObjects.length, enumerable: true },
@@ -115,10 +125,34 @@ define( ["util/xml", "model/gpx", "model/lineSeg", "model/userdata", "model/mous
 			}
 			//} while (i < n);	// Given the above break;, does this test ever get used?
 			//console.log(pts);
-			return new PointSeq(this.name, {points: pts});
+			return new PointSeq(typeEnum.simplified, this.name, {points: pts});
 		}
 		return null;
 	};
+	function createSimplified(ptSeqs) {
+		var pts = null;	// Working space to build
+		var ptSeqPartition = [];	// Array of arrays of PointSeqs
+		var prev = null;
+		ptSeqs.forEach(function(e) {
+			// TODO - rethink algo!
+			/*
+			if ( prev && e.points[0].lat === prev.lat && e.points[0].lng === prev.lng) {
+				pts = pts.concat(e.points);
+			}
+			else {
+				if (prev) {
+					console.assert(pts !== null);
+				}
+			}
+
+			if (pts === null) {
+				pts = new Array();
+			}
+			prev = e.points[points.length - 1];
+		   */
+		});
+
+	}
 
 	function getAll() {
 		return modelObjects;
@@ -126,6 +160,8 @@ define( ["util/xml", "model/gpx", "model/lineSeg", "model/userdata", "model/mous
 
 	var pub = {
 		PointSeq: PointSeq,
+		typeEnum: typeEnum,
+		createSimplified: createSimplified,
 		getAll: getAll
 	};
 	return pub;
