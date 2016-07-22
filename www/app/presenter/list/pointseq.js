@@ -17,7 +17,7 @@ define(["app/eventbus", "model/state", "model/route", "model/pointseq"], functio
 		// set up in getTableColumns():
 		return {
 			modelObject: ptSeq,
-			title: ptSeq.getSourceName(),
+			title: ptSeq.name,
 			id: ptSeq.id,
 			points: ptSeq.length + " pts",
 			distance: (ptSeq.distance / 1000).toFixed(2) + " km",

@@ -7,18 +7,14 @@ define( ["util/xml", "model/gpx", "model/lineSeg", "model/userdata", "model/mous
 	// Waypoint sequences represent routes (or tracks).
 	// A Sequence of waypoints is a core part of the model: it is what defines a section of a route.
 
-	var PointSeq = function(theSource, theSeq) {
+	var PointSeq = function(name, theSeq) {
 		var cache = {
 			distance: null
 		};
 		Object.defineProperties(this, {
-			// TODO - remove the source property.
-			// TODO - remove the gpxRte and gpxTrk properties too.
-			source: { value: theSource, enumerable: true },
+			name: { value: name, enumerable: true },
 			points: {value: theSeq.points, enumerable: true },
 			id: {value: modelObjects.length, enumerable: true },
-			gpxRte: { value: theSeq.gpxRte, enumerable: true },
-			gpxTrk: { value: theSeq.gpxTrk, enumerable: true },
 			length: { value: theSeq.points.length, enumerable: true },
 			distance: {
 				get: function() {
@@ -46,9 +42,6 @@ define( ["util/xml", "model/gpx", "model/lineSeg", "model/userdata", "model/mous
 	PointSeq.prototype.clearSelections = mouseStates.clearSelections(modelObjects);
 	PointSeq.prototype.setHovered = mouseStates.setHovered(eventPrefix);
 
-	PointSeq.prototype.getSourceName = function() {
-		return this.source.name;
-	};
 	PointSeq.prototype.getDistance = function() {
 		var pts = this.points;
 		var i, len = pts.length;
@@ -122,7 +115,7 @@ define( ["util/xml", "model/gpx", "model/lineSeg", "model/userdata", "model/mous
 			}
 			//} while (i < n);	// Given the above break;, does this test ever get used?
 			//console.log(pts);
-			return new PointSeq(this.source, {points: pts});
+			return new PointSeq(this.name, {points: pts});
 		}
 		return null;
 	};

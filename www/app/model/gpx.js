@@ -50,9 +50,8 @@ define( ["app/eventbus", "model/gpxParse", "model/point", "model/pointseq", "mod
 		if (parsed.trk) {
 			parsed.trk.forEach( function(trk) {
 				trk.trkseg.forEach( function(trkseg) {
-					ptSeq = new pointseq.PointSeq(file, {
-						points: convertGpxWaypointsToModelPoints(trkseg.trkpt),
-						gpxTrk: trk
+					ptSeq = new pointseq.PointSeq(file.name, {
+						points: convertGpxWaypointsToModelPoints(trkseg.trkpt)
 					});
 					routes.push(new route.Route(ptSeq));
 					pointSeqs.push(ptSeq);
@@ -61,9 +60,8 @@ define( ["app/eventbus", "model/gpxParse", "model/point", "model/pointseq", "mod
 		}
 		if (parsed.rte) {
 			parsed.rte.forEach( function(rte) {
-				ptSeq = new pointseq.PointSeq(file, {
-					points: convertGpxWaypointsToModelPoints(rte.rtept),
-					gpxRte: rte
+				ptSeq = new pointseq.PointSeq(file.name, {
+					points: convertGpxWaypointsToModelPoints(rte.rtept)
 				});
 				routes.push(new route.Route(ptSeq));
 				pointSeqs.push(ptSeq);
@@ -87,6 +85,8 @@ define( ["app/eventbus", "model/gpxParse", "model/point", "model/pointseq", "mod
 		var prevEnd = {lat: null, lng: null };	// Keep track of previous end point.
 		// TODO - finish this!
 		console.log("model/gpx: simplifyRoutes() - work in progress.");
+		// TODO - it might be better to move this to model/pointseq.merge(this.pointSeqs)
+		//      - a function which in the future might also be used to merge crossing pointSeqs into one.
 		this.pointSeqs.forEach(function(e) {
 			if (e.points[0].lat === prevEnd.lat && e.points[0].lng === prevEnd.lng) {
 				ptSeq = ptSeq.concat(e.points);
