@@ -1,4 +1,4 @@
-define( ["jszip", "FileSaver", "model/route"], function(JSZip, fs, routeModel) {
+define( ["jszip", "FileSaver", "model/file", "model/route"], function(JSZip, fs, fileModel, routeModel) {
 	"use strict";
 
 	function compileRoutes() {
@@ -10,6 +10,14 @@ define( ["jszip", "FileSaver", "model/route"], function(JSZip, fs, routeModel) {
 			//PROBLEM: duplicate file names, if the sae original GPX file had more than one trkseg, for example.
 			//res.push({ fileName: e.original.source.name, fileContent: "TEST" });
 		//});
+		var i = 0;
+		fileModel.getAll().forEach(function(f) {
+			i = 0;
+			f.gpxObject.routes.forEach(function(r) {
+				res.push({fileName: f.source.name + "_" + i + ".gpx", fileContent: r.simplified.toGpx()});
+				++i;
+			});
+		});
 		return res;
 	}
 	function addToZip(zip, prefix, objects) {

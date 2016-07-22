@@ -13,6 +13,7 @@ requirejs.config({
 		model: "../app/model",
 		presenter: "../app/presenter",
 		data: "../app/data",
+		util: "../app/util",
 
 		// If we want to load D3 from a local source:
 		//d3: "d3.v3.min"

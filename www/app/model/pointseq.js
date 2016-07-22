@@ -1,4 +1,4 @@
-define( ["model/gpx", "model/lineSeg", "model/userdata", "model/mouseStates", "app/eventbus"], function(gpx, lineSeg, userdata, mouseStates, eventbus) {
+define( ["util/xml", "model/gpx", "model/lineSeg", "model/userdata", "model/mouseStates", "app/eventbus"], function(xml, gpx, lineSeg, userdata, mouseStates, eventbus) {
 	"use strict";
 
 	var eventPrefix = "PointSeq";
@@ -57,6 +57,17 @@ define( ["model/gpx", "model/lineSeg", "model/userdata", "model/mouseStates", "a
 		}
 		//console.log("PointSeq.getDistance, " + len + " points, " + res + " metres");
 		return res;
+	};
+	PointSeq.prototype.toGpx = function() {
+		return xml.xml("gpx",
+					   {
+						   xmlns: "http://www.topografix.com/GPX/1/1",
+						   version: "1.1",
+						   creator: "https://github.com/gps-touring/js-app-src"
+					   },
+					   xml.xml("rte", {}, 
+							   this.points.map(function(p) { return xml.xml("rtept", p.gpxAttrs(), "") }).join(""))
+					  );
 	};
 	PointSeq.prototype.simplify = function() {
 		// remove points that contribute little to the path

@@ -1,4 +1,4 @@
-define( ["model/userdata"], function(userdata) {
+define( ["util/xml", "model/userdata"], function(xml, userdata) {
 	"use strict";
 
 	// TODO: move this somewhere better!
@@ -39,9 +39,14 @@ define( ["model/userdata"], function(userdata) {
 	Point.prototype.toGpx = function() {
 		// TODO - check if this.gpxWpt is not null, and add more fields into the GPX, not just name
 		//        This is a temp hack to dump out campsites from archies GPX files.
+		// TODO - redo this using features of util/xml.
 		return "<wpt lat=\"" + this.lat + "\" lon=\'" + this.lng + "\">" + 
 			"<name>" + this.gpxWpt.name.encodeHTML() + "</name>" +
 			"</wpt>";
+	};
+	Point.prototype.gpxAttrs = function() {
+		// 5 decimal places gives accuracy to about 1 metre.
+		return {lat: Number(this.lat).toFixed(5), lon: Number(this.lng).toFixed(5)};
 	};
 	// We don't define userdata as a property of Point, because we want it to be created on demand,
 	// so it does not take up unnecessary space in this highly numerous object.
