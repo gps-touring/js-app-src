@@ -21,7 +21,7 @@ define( ["app/eventbus", "model/gpxParse", "model/point", "model/pointseq", "mod
 				//console.log(e);
 				// icon taken from http://fortawesome.github.io/Font-Awesome/icons/
 				eventbus.publish({
-					topic: "Point.add",
+					topic: "Marker.add",
 					data: {
 						point: pt,
 						options: {

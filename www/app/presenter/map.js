@@ -66,7 +66,7 @@ define(["app/eventbus", "model/markers", "presenter/map/pointseq", "model/route"
 
 		data.modelObject.getUserData("mapView").showState(data.state);
 	}
-	function onPointAdd(data/*, envelope*/) {
+	function onMarkerAdd(data/*, envelope*/) {
 		var pt = data.point;
 		var latlng = [pt.lat, pt.lng];	// Understood by Leaflet.
 		// options properties are the options avaiable for Leaflet.awesome-markers.
@@ -92,7 +92,7 @@ define(["app/eventbus", "model/markers", "presenter/map/pointseq", "model/route"
 
 		pt.setUserData("mapView", view.addMarker(latlng, data.options, eventHandlers));
 	}
-	function onPointRemove(data/*, envelope*/) {
+	function onMarkerRemove(data/*, envelope*/) {
 		data.point.getUserData("mapView").destroy();
 	}
 	function onViewRoutesStateChange(/*data, envelope*/) {
@@ -109,8 +109,8 @@ define(["app/eventbus", "model/markers", "presenter/map/pointseq", "model/route"
 		// subscribe to events published by the model:
 		eventbus.subscribe({topic: "PointSeq.new", callback: onNewPointSeq});
 		eventbus.subscribe({topic: "PointSeq.stateChange", callback: onPointSeqStateChange});
-		eventbus.subscribe({topic: "Point.add", callback: onPointAdd});
-		eventbus.subscribe({topic: "Point.remove", callback: onPointRemove});
+		eventbus.subscribe({topic: "Marker.add", callback: onMarkerAdd});
+		eventbus.subscribe({topic: "Marker.remove", callback: onMarkerRemove});
 		eventbus.subscribe({topic: "StateChange.viewRoutes", callback: onViewRoutesStateChange});
 	}
 	var pub = {
