@@ -44,6 +44,10 @@ define( ["util/xml", "model/userdata"], function(xml, userdata) {
 			"<name>" + this.gpxWpt.name.encodeHTML() + "</name>" +
 			"</wpt>";
 	};
+	Point.prototype.isSameLatLng = function(pt) {
+		return this.lat === pt.lat && this.lng == pt.lng;
+	};
+
 	Point.prototype.gpxAttrs = function() {
 		// 5 decimal places gives accuracy to about 1 metre.
 		return {lat: Number(this.lat).toFixed(5), lon: Number(this.lng).toFixed(5)};
