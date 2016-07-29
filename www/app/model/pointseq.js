@@ -1,4 +1,4 @@
-define( ["util/xml", "model/lineSeg", "model/userdata", "model/mouseStates", "model/state", "app/eventbus"], function(xml, lineSeg, userdata, mouseStates, state, eventbus) {
+define( ["util/xml", "model/point", "model/lineSeg", "model/userdata", "model/mouseStates", "model/state", "app/eventbus"], function(xml, point, lineSeg, userdata, mouseStates, state, eventbus) {
 	"use strict";
 
 	var eventPrefix = "PointSeq";
@@ -73,6 +73,9 @@ define( ["util/xml", "model/lineSeg", "model/userdata", "model/mouseStates", "mo
 							   this.points.map(function(p) { return xml.xml("rtept", p.gpxAttrs(), "") }).join(""))
 					  );
 	};
+	function simplifiedPoint(pt) {
+		return new point.Point(pt.lat, pt.lng, pt.ele, {});
+	}
 	PointSeq.prototype.simplify = function(newName) {
 		// remove points that contribute little to the path
 		var allowedError = 5;	// metres
@@ -117,7 +120,7 @@ define( ["util/xml", "model/lineSeg", "model/userdata", "model/mouseStates", "mo
 		if (n > 0) {
 			//do {
 			while (true) {
-				pts.push(this.points[i]);
+				pts.push(simplifiedPoint(this.points[i]));
 				if (i === n - 1) {
 					break;	// We've just done the last point in the original sequence.
 				}
@@ -134,28 +137,6 @@ define( ["util/xml", "model/lineSeg", "model/userdata", "model/mouseStates", "mo
 		return ptSeqs.map(function(ptSeq) { 
 			return ptSeq.simplify(name + "_" + i++);
 		});
-			/*
-		var pts = null;	// Working space to build
-		var ptSeqPartition = [];	// Array of arrays of PointSeqs
-		var prev = null;
-		ptSeqs.forEach(function(e) {
-			// TODO - rethink algo!
-			if ( prev && e.points[0].lat === prev.lat && e.points[0].lng === prev.lng) {
-				pts = pts.concat(e.points);
-			}
-			else {
-				if (prev) {
-					console.assert(pts !== null);
-				}
-			}
-
-			if (pts === null) {
-				pts = new Array();
-			}
-			prev = e.points[points.length - 1];
-		});
-		   */
-
 	}
 	PointSeq.prototype.isOfType = function(type, flag) {
 		switch(type) {

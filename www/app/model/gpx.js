@@ -11,28 +11,9 @@ define( ["app/eventbus", "model/gpxParse", "model/point", "model/pointseq"], fun
 			// We assume that lat and lon are always there (else it's ill-defined GPX wpt).
 			var len = Object.keys(e).length;
 			var wptHasAdditionalInfo = len > 3 || (e.ele === undefined && len > 2);
+			if (wptHasAdditionalInfo) console.log(e);
 			var gpxWpt = wptHasAdditionalInfo ? e : undefined;
 			var pt = new point.Point(e.lat, e.lon, e.ele, {gpxWpt: gpxWpt});
-			// TODO - for consistecy with other model objects, 
-			//        the Point should publish it's own existence itself.
-			//        Need to check any other places where Point.add is published.
-			if (wptHasAdditionalInfo) {
-				//console.log("Waypoint with extra data:");
-				//console.log(e);
-				// icon taken from http://fortawesome.github.io/Font-Awesome/icons/
-				eventbus.publish({
-					topic: "Marker.add",
-					data: {
-						point: pt,
-						options: {
-							cluster: true,
-							icon: "map-signs",
-							hovertext: e.name,
-							markerColor: "blue"
-						}
-					}
-				});
-			}
 			return pt;
 		});
 	}
@@ -92,7 +73,16 @@ define( ["app/eventbus", "model/gpxParse", "model/point", "model/pointseq"], fun
 				pointSeqs.push(ptSeq);
 			});
 		}
-		waypoints = convertGpxWaypointsToModelPoints(parsed.wpt);
+		if (parsed.wpt) {
+			waypoints = convertGpxWaypointsToModelPoints(parsed.wpt);
+			eventbus.publish({
+				topic: "Waypoints.add",
+				data: {
+					waypoints: waypoints,
+					fileName: file.name
+				}
+			});
+		}
 
 		Object.defineProperties(this, {
 			pointSeqs: { value: pointSeqs, enumerable: true},

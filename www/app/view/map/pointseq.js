@@ -1,11 +1,24 @@
-define(["leaflet"], function(leaflet) {
+define(["leaflet", "view/map/marker"], function(leaflet, markerView) {
 	"use strict";
 
 	var keepCurrentView = false; 	// because it is initally set to by the system, not the user.
 
-	function PointSeq(map, latlngs, eventHandlers) {
+	function PointSeq(map, latlngs, markers, eventHandlers) {
 
-		this.polyline = leaflet.polyline(latlngs, {className: "route"}).addTo(map);
+		this.map = map;
+		this.polyline = leaflet.polyline(latlngs, {className: "route"});
+		this.layerGroup = leaflet.layerGroup();
+		this.markerCluster = leaflet.markerClusterGroup();
+		this.layerGroup.addLayer(this.markerCluster);
+		eventHandlers = {};
+		markers.forEach(function(m) {
+			new markerView.Marker(this.map, this.markerCluster, m.latlng, {
+				cluster: true, icon: "map-signs", hovertext: m.hovertext, markerColor: "green"}, eventHandlers);
+
+		}, this);
+		this.layerGroup.addLayer(this.polyline);
+		this.setVisibility(true);
+
 		var bounds = this.polyline.getBounds();
 		var i;
 		// Add the event handlers that are defined in model/pointseq:
@@ -41,6 +54,7 @@ define(["leaflet"], function(leaflet) {
 		}
 	};
 	PointSeq.prototype.setVisibility = function(vis) {	// vis is boolean
+		/*
 		var cssClass = "hidden";
 		if (vis && leaflet.DomUtil.hasClass(this.polyline._path, cssClass)) {
 			leaflet.DomUtil.removeClass(this.polyline._path, cssClass);
@@ -48,6 +62,15 @@ define(["leaflet"], function(leaflet) {
 		if (!vis && !leaflet.DomUtil.hasClass(this.polyline._path, cssClass)) {
 			leaflet.DomUtil.addClass(this.polyline._path, cssClass);
 		}
+	   */
+	  // Better than buggering around with css class hack via _path:
+		if (vis) {
+			this.map.addLayer(this.layerGroup);
+		}
+		else {
+			this.map.removeLayer(this.layerGroup);
+		}
+
 	};
 
 	var pub = {

@@ -1,18 +1,19 @@
 define(["leaflet", "leafletAwesomeMarkers", "leaflet.markercluster"], function(leaflet, awesomeMarkers, cluster) {
 	"use strict";
 
-	var group = null;
+	//var group = null;
 
 	// Using font-awesome icons, the available choices can be seen here:
 	// http://fortawesome.github.io/Font-Awesome/icons/
 	var dfltOptions = {prefix: "fa"};	// "fa" selects the font-awesome icon set (we have no other)
 
 	function init(map) {
-		group = leaflet.markerClusterGroup();
-		map.addLayer(group);
+		console.log("TODO 1. change the Marker constructor so that is takes a parent instead of both map and group");
+		console.log("     2. then change the calling functions appropriately");
 	}
 
-	function Marker(map, latlng, options, eventHandlers) {
+	function Marker(map, group, latlng, options, eventHandlers) {
+		
 
 		var popuptext = "Popup text goes here <a href=\"http://www.google.co.uk\" target=\"_blank\">Google?</a>.";
 		 

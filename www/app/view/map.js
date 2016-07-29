@@ -5,6 +5,7 @@ define(
 
 		var settings;
 		var map;
+		var globalMarkerCluster;	// TODO - check if this is obsolete, once markers for POIs and polylines have been refactored.
 		var priv = {
 			init: function() {
 				var i, eventHandlers = presenter.getMapEventHandlers();
@@ -27,14 +28,16 @@ define(
 					maxZoom: 18
 				}).addTo(map);
 
+				globalMarkerCluster = leaflet.markerClusterGroup();
+				map.addLayer(globalMarkerCluster);
 				markerView.init(map);
 			}
 		};
-		function addPointSeq(latlngs, eventHandlers, className) {
-			return new pointseqView.PointSeq(map, latlngs, eventHandlers, className);
+		function addPointSeq(latlngs, markers, eventHandlers, className) {
+			return new pointseqView.PointSeq(map, latlngs, markers, eventHandlers, className);
 		}
 		function addMarker(latlng, options, eventHandlers) {
-			return new markerView.Marker(map, latlng, options, eventHandlers);
+			return new markerView.Marker(map, globalMarkerCluster, latlng, options, eventHandlers);
 		}
 		var pub = {
 			init: priv.init,

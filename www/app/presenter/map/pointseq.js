@@ -45,9 +45,27 @@ define(["leaflet", "app/eventbus"], function(leaflet, eventbus) {
 		}
 		return latLngs;
 	}
+	function getMarkers(seq) {
+		// create markers for all ponts in the sequence that have information worth marking
+		// (i.e. more than just lat, lng and ele)
+		var markers = [];
+		var marker = null;
+		seq.points.forEach(function(p) {
+			marker = {};
+			if (!p.isJustLocation()) {
+				marker.hovertext = p.toHoverText();
+			}
+			if (Object.keys(marker).length > 0) {
+				marker.latlng = [p.lat, p.lng];
+				markers.push(marker);
+			}
+		});
+		return markers;
+	}
 	var pub = {
 		createEventHandlers: createEventHandlers,
-		toLeafletLatLngs: toLeafletLatLngs
+		toLeafletLatLngs: toLeafletLatLngs,
+		getMarkers: getMarkers
 	};
 	return pub;
 });

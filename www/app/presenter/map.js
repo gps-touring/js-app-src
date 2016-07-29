@@ -57,15 +57,21 @@ define(["app/eventbus", "model/markers", "presenter/map/pointseq", "model/points
 		//console.log("onNewPointSeq");
 		var seq = data.modelObject;
 		var latLngs = pointseqPresenter.toLeafletLatLngs(seq);
+		var markers = pointseqPresenter.getMarkers(seq);
 		// Here, we register eventHandlers with each view. If the model changes state
 		// as a result of handling these events, we will pick up those state changes in onPointSeqStateChange.
-		seq.setUserData("mapView", view.addPointSeq(latLngs, pointseqPresenter.createEventHandlers(seq)));
+		seq.setUserData("mapView", view.addPointSeq(latLngs, markers, pointseqPresenter.createEventHandlers(seq)));
 		// TODO set visibility -  are we displaying original or simplified routes?
 	}
 	function onPointSeqStateChange(data/*, envelope*/) {
 		//console.log("onPointSeqStateChange");
 
 		data.modelObject.getUserData("mapView").showState(data.state);
+	}
+	function onWaypointsAdd(data/*, envelope*/) {
+		var waypoints = data.waypoints;
+		console.log("TODO - handle the addition of " + waypoints.length + " new waypoints");
+		// TODO - use the same design as for onNewPointSeq to convert the waypoints into leaflet markers.
 	}
 	function onMarkerAdd(data/*, envelope*/) {
 		var pt = data.point;
@@ -111,6 +117,7 @@ define(["app/eventbus", "model/markers", "presenter/map/pointseq", "model/points
 		eventbus.subscribe({topic: "PointSeq.new", callback: onNewPointSeq});
 		eventbus.subscribe({topic: "PointSeq.stateChange", callback: onPointSeqStateChange});
 		eventbus.subscribe({topic: "Marker.add", callback: onMarkerAdd});
+		eventbus.subscribe({topic: "Waypoints.add", callback: onWaypointsAdd});
 		eventbus.subscribe({topic: "Marker.remove", callback: onMarkerRemove});
 		eventbus.subscribe({topic: "StateChange.viewRoutes", callback: onViewRoutesStateChange});
 	}

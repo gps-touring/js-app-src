@@ -36,6 +36,26 @@ define( ["util/xml", "model/userdata"], function(xml, userdata) {
 	Point.prototype.dump = function() {
 		return "lat: " + this.lat + ", lng: " + this.lng + ", ele: " + this.ele;
 	};
+	Point.prototype.isJustLocation = function() {
+		if (this.gpxWpt) {
+			return (Object.keys(this.gpxWpt).filter(function(k) {
+				return k != "lat" && k != "lon" && k != "ele";
+			}).length === 0);
+		}
+		return true;
+	}
+	Point.prototype.toHoverText = function() {
+		if (this.gpxWpt) {
+			return Object.keys(this.gpxWpt).map(function(k) {
+				return k + ": \"" + this.gpxWpt[k] + "\"";
+			}, this).join("\n");
+		}
+		else {
+			return ["lat", "lng", "ele"].map(function(k) {
+				return k + ": \"" + this[k] + "\"";
+			}, this).join("\n");
+		}
+	}
 	Point.prototype.toGpx = function() {
 		// TODO - check if this.gpxWpt is not null, and add more fields into the GPX, not just name
 		//        This is a temp hack to dump out campsites from archies GPX files.
