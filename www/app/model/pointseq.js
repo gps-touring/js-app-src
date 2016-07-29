@@ -1,4 +1,4 @@
-define( ["util/xml", "model/lineSeg", "model/userdata", "model/mouseStates", "app/eventbus"], function(xml, lineSeg, userdata, mouseStates, eventbus) {
+define( ["util/xml", "model/lineSeg", "model/userdata", "model/mouseStates", "model/state", "app/eventbus"], function(xml, lineSeg, userdata, mouseStates, state, eventbus) {
 	"use strict";
 
 	var eventPrefix = "PointSeq";
@@ -13,8 +13,8 @@ define( ["util/xml", "model/lineSeg", "model/userdata", "model/mouseStates", "ap
 	
 
 	var modelObjects = [];
-	// Waypoint sequences represent routes (or tracks).
-	// A Sequence of waypoints is a core part of the model: it is what defines a section of a route.
+	// PointSeq represents a sequence of waypoints defining a path.
+	// It may, for example, be created from GPX <rte> or <trk>/<trkseg>. 
 
 	var PointSeq = function(type, name, theSeq) {
 		var cache = {
@@ -73,7 +73,7 @@ define( ["util/xml", "model/lineSeg", "model/userdata", "model/mouseStates", "ap
 							   this.points.map(function(p) { return xml.xml("rtept", p.gpxAttrs(), "") }).join(""))
 					  );
 	};
-	PointSeq.prototype.simplify = function() {
+	PointSeq.prototype.simplify = function(newName) {
 		// remove points that contribute little to the path
 		var allowedError = 5;	// metres
 		var originalPts = this.points;
@@ -125,17 +125,21 @@ define( ["util/xml", "model/lineSeg", "model/userdata", "model/mouseStates", "ap
 			}
 			//} while (i < n);	// Given the above break;, does this test ever get used?
 			//console.log(pts);
-			return new PointSeq(typeEnum.simplified, this.name, {points: pts});
+			return new PointSeq(typeEnum.simplified, newName, {points: pts});
 		}
 		return null;
 	};
-	function createSimplified(ptSeqs) {
+	function createSimplified(name, ptSeqs) {
+		var i = 0;
+		return ptSeqs.map(function(ptSeq) { 
+			return ptSeq.simplify(name + "_" + i++);
+		});
+			/*
 		var pts = null;	// Working space to build
 		var ptSeqPartition = [];	// Array of arrays of PointSeqs
 		var prev = null;
 		ptSeqs.forEach(function(e) {
 			// TODO - rethink algo!
-			/*
 			if ( prev && e.points[0].lat === prev.lat && e.points[0].lng === prev.lng) {
 				pts = pts.concat(e.points);
 			}
@@ -149,11 +153,35 @@ define( ["util/xml", "model/lineSeg", "model/userdata", "model/mouseStates", "ap
 				pts = new Array();
 			}
 			prev = e.points[points.length - 1];
-		   */
 		});
+		   */
 
 	}
+	PointSeq.prototype.isOfType = function(type, flag) {
+		switch(type) {
+			// TODO - Consider whether we need routeTypeEnum as well as typeEnum (I think not!)
+			case state.routeTypeEnum.original:
+				return flag === (this.type === typeEnum.gpx);
+			case state.routeTypeEnum.simplified:
+				return flag === (this.type === typeEnum.simplified);
+			default:
+				console.assert(false, "Unknown ptSeqType " + type);
+			return null;
+		}
+	};
 
+	function getAllOfType(ptSeqType, flag) {
+		return modelObjects.filter(function(ptSeq) { return ptSeq.isOfType(ptSeqType, flag); });
+	}
+	function getAllSimplified() {
+		return getAllOfType(state.routeTypeEnum.simplified, true);
+	}
+	function getAllVisible() {
+		return getAllOfType(state.getViewRoutesType(), true);
+	}
+	function getAllInvisible() {
+		return getAllOfType(state.getViewRoutesType(), false);
+	}
 	function getAll() {
 		return modelObjects;
 	}
@@ -162,6 +190,9 @@ define( ["util/xml", "model/lineSeg", "model/userdata", "model/mouseStates", "ap
 		PointSeq: PointSeq,
 		typeEnum: typeEnum,
 		createSimplified: createSimplified,
+		getAllSimplified: getAllSimplified,
+		getAllVisible: getAllVisible,
+		getAllInvisible: getAllInvisible,
 		getAll: getAll
 	};
 	return pub;

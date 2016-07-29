@@ -1,4 +1,4 @@
-define(["app/eventbus", "model/markers", "presenter/map/pointseq", "model/route"], function(eventbus, markerModel, pointseqPresenter, routeModel) {
+define(["app/eventbus", "model/markers", "presenter/map/pointseq", "model/pointseq"], function(eventbus, markerModel, pointseqPresenter, ptSeqModel) {
 	"use strict";
 
 	var view;
@@ -60,6 +60,7 @@ define(["app/eventbus", "model/markers", "presenter/map/pointseq", "model/route"
 		// Here, we register eventHandlers with each view. If the model changes state
 		// as a result of handling these events, we will pick up those state changes in onPointSeqStateChange.
 		seq.setUserData("mapView", view.addPointSeq(latLngs, pointseqPresenter.createEventHandlers(seq)));
+		// TODO set visibility -  are we displaying original or simplified routes?
 	}
 	function onPointSeqStateChange(data/*, envelope*/) {
 		//console.log("onPointSeqStateChange");
@@ -96,11 +97,11 @@ define(["app/eventbus", "model/markers", "presenter/map/pointseq", "model/route"
 		data.point.getUserData("mapView").destroy();
 	}
 	function onViewRoutesStateChange(/*data, envelope*/) {
-		routeModel.getAllVisiblePointSeqs().forEach( function(ptSeq) {
+		ptSeqModel.getAllVisible().forEach( function(ptSeq) {
 			// "mapView" userData is the view/map/PointSeq object.
 			ptSeq.getUserData("mapView").setVisibility(true);
 		});
-		routeModel.getAllInvisiblePointSeqs().forEach( function(ptSeq) {
+		ptSeqModel.getAllInvisible().forEach( function(ptSeq) {
 			ptSeq.getUserData("mapView").setVisibility(false);
 		});
 	}

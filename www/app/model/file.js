@@ -4,11 +4,18 @@ define( ["model/userdata", "model/mouseStates", "app/eventbus"], function(userda
 	var eventPrefix = "File";
 	var modelObjects = [];
 
+	// What happens when a file is loaded?
+	//  - the gpxObject contains the original GPX routes (<rte> and <trk>/<trkseg>) and waypoints (from <wpt>)
+	//  - simplified versions of the routes are created
+	//    - reduce precision (to 5dp) of lat/long
+	//    - merge adjacent routes (usually from two <trkseg> where end of one is same as start of next)
+	//    - remove unnecessary waypoints
+	//    - more?
 	var File = function(theSource, gpxObject) {
 		Object.defineProperties(this, {
 			source: { value: theSource, enumerable: true },
 			gpxObject: { value: gpxObject, enumerable: true },
-			simplifiedRoutes: { value: gpxObject.simplifyRoutes(), enumerable: true },
+			simplifiedPtSeqs: { value: gpxObject.simplifyPtSeqs(theSource.name), enumerable: true },
 			id: {value: modelObjects.length, enumerable: true },
 			// userdata: property created if setUserData is called.
 		});

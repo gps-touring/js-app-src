@@ -1,22 +1,14 @@
-define( ["jszip", "FileSaver", "model/file", "model/route"], function(JSZip, fs, fileModel, routeModel) {
+define( ["jszip", "FileSaver", "model/pointseq"], function(JSZip, fs, ptSeqModel) {
 	"use strict";
 
 	function compileRoutes() {
 		var res = [];
-		// We don't really want GPX routes based on our Route objects, we want them based on a journey between
-		// origin and destination.
-		// This remains asn an illustration of populating the fileName and fileContent properties. 
-		//routeModel.getAll().forEach(function(e) {
-			//PROBLEM: duplicate file names, if the sae original GPX file had more than one trkseg, for example.
-			//res.push({ fileName: e.original.source.name, fileContent: "TEST" });
-		//});
-		var i = 0;
-		fileModel.getAll().forEach(function(f) {
-			i = 0;
-			f.gpxObject.routes.forEach(function(r) {
-				res.push({fileName: f.source.name + "_" + i + ".gpx", fileContent: r.simplified.toGpx()});
-				++i;
-			});
+
+		// We are creating GPX files from 'simplified' PointSeq objects, which have been designed to
+		// be used for output:
+		ptSeqModel.getAllSimplified().forEach(function(ptSeq) {
+			console.log(ptSeq.name);
+			res.push({fileName: ptSeq.name + ".gpx", fileContent: ptSeq.toGpx()});
 		});
 		return res;
 	}

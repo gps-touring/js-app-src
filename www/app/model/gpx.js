@@ -1,4 +1,4 @@
-define( ["app/eventbus", "model/gpxParse", "model/point", "model/pointseq", "model/route"], function(eventbus, gpxParse, point, pointseq, route) {
+define( ["app/eventbus", "model/gpxParse", "model/point", "model/pointseq"], function(eventbus, gpxParse, point, pointseq) {
 	"use strict";
 
 	function convertGpxWaypointsToModelPoints(gpxWpts) {
@@ -42,8 +42,7 @@ define( ["app/eventbus", "model/gpxParse", "model/point", "model/pointseq", "mod
 	// Construct a Gpx object from a string:
 	function Gpx(file, str) {
 		var parsed = gpxParse.parseXmlStr(str);
-		var routes = [];
-		var pointSeqs = [];	// TODO - make this obsolete, now that we have routes.
+		var pointSeqs = [];
 		var waypoints = [];
 		var ptSeq;
 		if (parsed.trk) {
@@ -52,7 +51,6 @@ define( ["app/eventbus", "model/gpxParse", "model/point", "model/pointseq", "mod
 					ptSeq = new pointseq.PointSeq(pointseq.typeEnum.gpx, file.name, {
 						points: convertGpxWaypointsToModelPoints(trkseg.trkpt)
 					});
-					routes.push(new route.Route(ptSeq));
 					pointSeqs.push(ptSeq);
 				});
 			});
@@ -62,43 +60,18 @@ define( ["app/eventbus", "model/gpxParse", "model/point", "model/pointseq", "mod
 				ptSeq = new pointseq.PointSeq(pointseq.typeEnum.gpx, file.name, {
 					points: convertGpxWaypointsToModelPoints(rte.rtept)
 				});
-				routes.push(new route.Route(ptSeq));
 				pointSeqs.push(ptSeq);
 			});
 		}
 		waypoints = convertGpxWaypointsToModelPoints(parsed.wpt);
 
 		Object.defineProperties(this, {
-			routes: { value: routes, enumerable: true},
 			pointSeqs: { value: pointSeqs, enumerable: true},
 			waypoints: { value: waypoints, enumerable: true}
 		});
 	}
-	Gpx.prototype.simplifyRoutes = function() {
-		// TODO - createSimplified probably replaces all of what follows.
-		pointseq.createSimplified(this.pointSeqs);
-		// We build up an array of PointSeq objects.
-		// If the original GPX file had consecutive (end of one matched beginning of next) routes,
-		// then these will be merged into a single pointSeq. 
-		// This is common for the separate <trkseg> elements of a <trk>.
-		var ptSeqs = [];
-		var ptSeq = []; // Working space to merge consecutive routes
-		var prevEnd = {lat: null, lng: null };	// Keep track of previous end point.
-		// TODO - finish this!
-		console.log("model/gpx: simplifyRoutes() - work in progress.");
-		// TODO - it might be better to move this to model/pointseq.merge(this.pointSeqs)
-		//      - a function which in the future might also be used to merge crossing pointSeqs into one.
-		this.pointSeqs.forEach(function(e) {
-			if (e.points[0].lat === prevEnd.lat && e.points[0].lng === prevEnd.lng) {
-				ptSeq = ptSeq.concat(e.points);
-			}
-			else {
-				// 1. create new simplified PointSeq from ptSeq and add it to ptSeqs - unless it's empty
-				// 2. Re-initialize ptSeq from e.
-			}
-		});
-		// 3. create new simplified PointSeq from ptSeq and add it to ptSeqs - unless it's empty
-		return ptSeqs;
+	Gpx.prototype.simplifyPtSeqs = function(name) {
+		return pointseq.createSimplified(name, this.pointSeqs);
 	};
 	var pub = {
 		Gpx: Gpx
