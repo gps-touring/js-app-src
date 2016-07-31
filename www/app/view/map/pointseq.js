@@ -10,8 +10,8 @@ define(["leaflet", "view/map/marker"], function(leaflet, markerView) {
 		this.layerGroup = leaflet.layerGroup();
 		this.markerCluster = leaflet.markerClusterGroup();
 		this.layerGroup.addLayer(this.markerCluster);
-		eventHandlers = {};
 		markers.forEach(function(m) {
+			// TODO - consider the event handlers being added hare. Are they right? Do they do anything?
 			new markerView.Marker(this.map, this.markerCluster, m.latlng, {
 				cluster: true, icon: "map-signs", hovertext: m.hovertext, markerColor: "green"}, eventHandlers);
 
@@ -24,6 +24,7 @@ define(["leaflet", "view/map/marker"], function(leaflet, markerView) {
 		// Add the event handlers that are defined in model/pointseq:
 		var evs = Object.keys(eventHandlers);
 		for (i = 0; i < evs.length; ++i) {
+			//console.log("view/map/pointseq add eventhandler " + evs[i]);
 			this.polyline.on(evs[i], eventHandlers[evs[i]]);
 		}
 		// zoom the map to the polyline
