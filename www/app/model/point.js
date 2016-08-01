@@ -26,6 +26,7 @@ define( ["util/xml", "model/userdata"], function(xml, userdata) {
 			lng: { value: lng, enumerable: true },
 			ele: { value: ele, enumerable: true }
 			// userdata: property created if setUserData is called.
+			// milestone: property created if setMilestone is called.
 		});
 		if (opts.gpxWpt !== undefined) {
 			// We don't want to waste space with this property if it isn't needed.
@@ -33,8 +34,31 @@ define( ["util/xml", "model/userdata"], function(xml, userdata) {
 		}
 		//console.log(this);
 	}
+	Point.prototype.getName = function() {
+		if (this.milestone) {
+			return this.milestone;
+		}
+		return this.gpxWpt && this.gpxWpt.name ? this.gpxWpt.name : "";
+	};
+	Point.prototype.getDesc = function() {
+		return this.milestone ? this.milestone : "";
+	};
+	Point.prototype.getCmt = function() {
+		return this.milestone ? "cmt" : "";
+	};
+	Point.prototype.getSym = function() {
+		// We'd have prefered the icon "10" (milestone every 10km) to the warningflag, but it does not seem to work :-(
+		return this.milestone ? "warningflag" : "";
+	};
 	Point.prototype.dump = function() {
 		return "lat: " + this.lat + ", lng: " + this.lng + ", ele: " + this.ele;
+	};
+	function metresToKmString(m) {
+		return (m/1000).toFixed(2).toString() + "km";
+	}
+	Point.prototype.setMilestone = function(m) {	// m is in metres.
+		//console.log("Point.setMilestone: " + m);
+		this.milestone = metresToKmString(m);
 	};
 	Point.prototype.isJustLocation = function() {
 		if (this.gpxWpt) {
@@ -42,8 +66,21 @@ define( ["util/xml", "model/userdata"], function(xml, userdata) {
 				return k != "lat" && k != "lon" && k != "ele";
 			}).length === 0);
 		}
+		// Testing this.milestone depends on the fact that it is a string, not a Number (e.g. the number 0 - false):
+		if (this.milestone) {
+			return false;
+		}
 		return true;
-	}
+	};
+	Point.prototype.milestoneHoverText = function() {
+		// Testing this.milestone depends on the fact that it is a string, not a Number (e.g. the number 0 - false):
+		if (this.milestone) {
+			return "milestone: " + this.milestone + "\n"; 
+		}
+		else {
+			return "";
+		}
+	};
 	Point.prototype.toHoverText = function() {
 		if (this.gpxWpt) {
 			return Object.keys(this.gpxWpt).map(function(k) {
@@ -51,11 +88,26 @@ define( ["util/xml", "model/userdata"], function(xml, userdata) {
 			}, this).join("\n");
 		}
 		else {
-			return ["lat", "lng", "ele"].map(function(k) {
+			return this.milestoneHoverText() + ["lat", "lng", "ele"].map(function(k) {
 				return k + ": \"" + this[k] + "\"";
 			}, this).join("\n");
 		}
-	}
+	};
+	var xmlEle = function(tag, ele) {
+		return ele.length > 0 ? xml.xml(tag, {}, ele.encodeHTML()) : "";
+	};
+	Point.prototype.rteptXml = function(cummDist) {
+		var name = this.getName();
+		if (name.length === 0) name = metresToKmString(cummDist);
+		return xmlEle("name", name) +
+			xmlEle("sym", this.getSym()) +
+			//xmlEle("cmt", this.getCmt()) +
+			// Somewhat irrationally, the Description of a waypoing in my.vireranger.com gets populated via the <cmt>
+			// element of the gpt <rtept>. Whoda thought it?
+			xmlEle("cmt", this.getDesc()) +
+			""
+			;
+	};
 	Point.prototype.toGpx = function() {
 		// TODO - check if this.gpxWpt is not null, and add more fields into the GPX, not just name
 		//        This is a temp hack to dump out campsites from archies GPX files.

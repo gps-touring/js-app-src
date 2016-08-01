@@ -63,6 +63,8 @@ define( ["util/xml", "model/point", "model/lineSeg", "model/userdata", "model/mo
 		return res;
 	};
 	PointSeq.prototype.toGpx = function() {
+		var cummDist = 0;
+		var lastPt  = null;
 		return xml.xml("gpx",
 					   {
 						   xmlns: "http://www.topografix.com/GPX/1/1",
@@ -70,7 +72,11 @@ define( ["util/xml", "model/point", "model/lineSeg", "model/userdata", "model/mo
 						   creator: "https://github.com/gps-touring/js-app-src"
 					   },
 					   xml.xml("rte", {}, 
-							   this.points.map(function(p) { return xml.xml("rtept", p.gpxAttrs(), "") }).join(""))
+							   this.points.map(function(p) { 
+								   cummDist += lastPt ? lastPt.distanceTo(p) : 0;
+								   lastPt = p;
+								   return xml.xml("rtept", p.gpxAttrs(), p.rteptXml(cummDist));
+							   }).join(""))
 					  );
 	};
 	function simplifiedPoint(pt) {
@@ -129,14 +135,78 @@ define( ["util/xml", "model/point", "model/lineSeg", "model/userdata", "model/mo
 		}
 		return pts;
 	}
-	//};
+	function addMilestones(originalPts, milesoneDistanceKm) {
+		// NB This function modifies the first and last of originalPts, adding milesones to them.
+		// Intermediate milestones are added as new Points.
+		var pts = [];	// New sequence of points
+		var i = 0;
+		var n = originalPts.length;
+		var milestoneDistance = milesoneDistanceKm * 1000;
+		var lastMilestone = 0;	// metres
+		var cummDistance = 0;	// metres
+		var lastPt;
+		var pt, msPt;
+		var dist;
+		var d;
+		if (n > 0) {
+			//  Add milestone to first point in originalPts, then push it onto new pts:
+			pt = originalPts[i];
+			pt.setMilestone(cummDistance);
+			pts.push(pt);
+			while (++i < n) {	// Go through all intermediate points in originalPts
+				lastPt = pt;
+				pt = originalPts[i];
+				dist = lastPt.distanceTo(pt);
+				while (cummDistance + dist - lastMilestone >= milestoneDistance) {
+					// Need to add a new milestone.
+					// We use a while loop in case more than one milestone needs to be added before
+					// we reach point pt.
+
+					//lastMilestone is the distance to the new milestone:
+					lastMilestone += milestoneDistance;
+
+					// d is the proportion of the distance between lastPt and pt where the new milestone to be placed:
+					d = (lastMilestone - cummDistance)/dist;
+					console.assert(d > 0 && d <= 1.0);
+
+					// Create the milestone at d*100% of the distance between lastPt and pt:
+					msPt = new point.Point(
+						(Number(lastPt.lat) + (Number(pt.lat) - Number(lastPt.lat)) * d).toFixed(5),
+						(Number(lastPt.lng) + (Number(pt.lng) - Number(lastPt.lng)) * d).toFixed(5),
+						(Number(lastPt.ele) + (Number(pt.ele) - Number(lastPt.ele)) * d).toFixed(5),
+						{});
+					msPt.setMilestone(lastMilestone);
+					pts.push(msPt);
+
+					// Update cummDistance to include the distance to this new milestone:
+					cummDistance += lastPt.distanceTo(msPt);
+
+					// The lastPt added is not the new milestone:
+					lastPt = msPt;
+
+					// dist is the distance from the new milesone to the next point pt from originalPts:
+					// This is needed for the test in this while loop.
+					dist = lastPt.distanceTo(pt);
+				}
+				cummDistance += lastPt.distanceTo(pt);
+				if (i === n - 1) {
+					//  Add milestone to last point in originalPts, then push it onto new pts:
+					pt.setMilestone(cummDistance);
+				}
+				pts.push(pt);
+			}
+		}
+		return pts;
+	}
 	function createSimplified(name, ptSeqs) {
 		var i = 0;
 		var allowedError = 5;	// metres
+		var milesoneDistance = 10;	// km
 		var pts;
 		return ptSeqs.map(function(ptSeq) { 
 			//return ptSeq.simplify(name + "_" + i++);
 			pts = simplify(ptSeq.points, allowedError);
+			pts = addMilestones(pts, milesoneDistance);
 			return new PointSeq(typeEnum.simplified, name + "_" + i++, {points: pts});
 		});
 	}
