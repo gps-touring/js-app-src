@@ -76,14 +76,14 @@ define( ["util/xml", "model/point", "model/lineSeg", "model/userdata", "model/mo
 	function simplifiedPoint(pt) {
 		return new point.Point(pt.lat, pt.lng, pt.ele, {});
 	}
-	PointSeq.prototype.simplify = function(newName) {
-		// remove points that contribute little to the path
-		var allowedError = 5;	// metres
-		var originalPts = this.points;
+	function simplify(originalPts, allowedError) {
+		// To reduce the size of GPX files, remove points that contribute little to the path.
+		// An intermediate point will be omitted if it lies less than allowedError distance 
+		// from the sequence of points we get by omitting it.
 		var pts = [];	// New sequence of points
 		var i = 0;
-		var n = this.length;
-		var intermedatePointsTooFarAway = function(a, b) {
+		var n = originalPts.length;
+		var intermedatePointsTooFarAway = function(a, b) {	// a, b are indices of originalPts
 			console.assert( a >= 0, "pointseq.nextPointToKeep - bad parameter a negative");
 			console.assert( a + 1 < b, "pointseq.nextPointToKeep - the must be a point between a and b");
 			console.assert( b < n, "pointseq.nextPointToKeep - bad parameter b");
@@ -118,24 +118,26 @@ define( ["util/xml", "model/point", "model/lineSeg", "model/userdata", "model/mo
 			return k - 1;
 		}
 		if (n > 0) {
-			//do {
+			i = 0;
 			while (true) {
-				pts.push(simplifiedPoint(this.points[i]));
+				pts.push(simplifiedPoint(originalPts[i]));
 				if (i === n - 1) {
 					break;	// We've just done the last point in the original sequence.
 				}
 				i = nextPointToKeep(i);
 			}
-			//} while (i < n);	// Given the above break;, does this test ever get used?
-			//console.log(pts);
-			return new PointSeq(typeEnum.simplified, newName, {points: pts});
 		}
-		return null;
-	};
+		return pts;
+	}
+	//};
 	function createSimplified(name, ptSeqs) {
 		var i = 0;
+		var allowedError = 5;	// metres
+		var pts;
 		return ptSeqs.map(function(ptSeq) { 
-			return ptSeq.simplify(name + "_" + i++);
+			//return ptSeq.simplify(name + "_" + i++);
+			pts = simplify(ptSeq.points, allowedError);
+			return new PointSeq(typeEnum.simplified, name + "_" + i++, {points: pts});
 		});
 	}
 	PointSeq.prototype.isOfType = function(type, flag) {

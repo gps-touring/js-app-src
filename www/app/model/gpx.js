@@ -11,7 +11,7 @@ define( ["app/eventbus", "model/gpxParse", "model/point", "model/pointseq"], fun
 			// We assume that lat and lon are always there (else it's ill-defined GPX wpt).
 			var len = Object.keys(e).length;
 			var wptHasAdditionalInfo = len > 3 || (e.ele === undefined && len > 2);
-			if (wptHasAdditionalInfo) console.log(e);
+			//if (wptHasAdditionalInfo) console.log(e);
 			var gpxWpt = wptHasAdditionalInfo ? e : undefined;
 			var pt = new point.Point(e.lat, e.lon, e.ele, {gpxWpt: gpxWpt});
 			return pt;
