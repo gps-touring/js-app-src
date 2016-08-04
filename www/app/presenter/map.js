@@ -71,7 +71,18 @@ define(["app/eventbus", "model/markers", "presenter/map/pointseq", "model/points
 	function onWaypointsAdd(data/*, envelope*/) {
 		var waypoints = data.waypoints;
 		console.log("TODO - handle the addition of " + waypoints.length + " new waypoints");
-		// TODO - use the same design as for onNewPointSeq to convert the waypoints into leaflet markers.
+		// TODO - use the same design as for onNewPointSeq to convert the waypoints into leaflet markers?
+		//      - or shall we just do this here?
+		waypoints.forEach(function(p) {
+			p.setUserData("mapView", view.addMarker([p.lat, p.lng], {
+				hovertext: p.toHoverText(),
+				cluster: true,
+				icon: "map-signs",
+				markerColor: "red"
+			},
+			{}	// TODO EventHandlers
+												   ));
+		});
 	}
 	function onMarkerAdd(data/*, envelope*/) {
 		var pt = data.point;

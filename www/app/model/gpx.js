@@ -1,4 +1,4 @@
-define( ["app/eventbus", "model/gpxParse", "model/point", "model/pointseq"], function(eventbus, gpxParse, point, pointseq) {
+define( ["util/xml", "app/eventbus", "model/gpxParse", "model/point", "model/pointseq"], function(xml, eventbus, gpxParse, point, pointseq) {
 	"use strict";
 
 	function convertGpxWaypointsToModelPoints(gpxWpts) {
@@ -20,6 +20,72 @@ define( ["app/eventbus", "model/gpxParse", "model/point", "model/pointseq"], fun
 
 	var modelObjects = [];
 
+	function getDescForLinks(link) {
+		// CAUTION - maybe unfinished, work in progress.
+		//         - this was added as part of populating the <desc> of the <rte>
+		return xml.xml("p", {}, "Links found in original GPX file:" +
+					   link.map(function(lk) {
+			return xml.xml("a", {href: lk.href}, 
+						   (lk.text ? lk.text : " ") +
+							   (lk.type ? lk.type : "")
+						  );
+
+		}).join(""));
+	}
+	function getDesc(gpxObject) {
+		// CAUTION - maybe unfinished, work in progress.
+		//         - this was added as part of populating the <desc> of the <rte>
+		// gpxObject is a <rte> or a <trk>
+		//console.log("gpx.getDesc: gpxObject.link");
+		//console.log(gpxObject.link);
+		return (gpxObject.name ? gpxObject.name : "") +
+			(gpxObject.link ? getDescForLinks(gpxObject.link) : "") +
+			"";
+	}
+	function getLinkHtml(link) {
+		// CAUTION - maybe unfinished, work in progress.
+		//         - this was added as part of populating the <desc> of the <rte>
+		//return xml.xml("p", {}, "Links:");
+		if (link) {
+			if (Array.isArray(link)) {
+				console.log("link isArray");
+				return (xml.xml("p", {}, "Links:") +
+						xml.xml("ul", {}, link.map(
+							function(lk) {
+								return xml.xml("li", {}, xml.xml("a", {href: lk.href}, (lk.text ? lk.text : " ") + (lk.type ? lk.type : "")));
+							}).join("")
+							   )
+					   );
+			}
+			else {
+				console.log("link NOT isArray");
+				console.log(link);
+				return xml.xml("p", {}, "link: " + xml.xml("a", {href: link.href}, (link.text ? link.text : " ") + (link.type ? link.type : "")));
+			}
+		}
+		else {
+			return "";
+		}
+	}
+	function getAuthorHtml(author) {
+		// CAUTION - maybe unfinished, work in progress.
+		//         - this was added as part of populating the <desc> of the <rte>
+		return author ? (xml.xml("h2", {}, "Author information:") + getNameHtml(author.name) + getLinkHtml(author.link)) : "";
+	}
+	function getNameHtml(name) {
+		return name ? xml.xml("p", {}, "Name: " + name) : "";
+	}
+	function getTrkDesc(trk) {
+		// CAUTION - maybe unfinished, work in progress.
+		//         - this was added as part of populating the <desc> of the <rte>
+		return trk ? (xml.xml("h2", {}, "Track information:") + getNameHtml(trk.name) + getLinkHtml(trk.link)) : "";
+	}
+	function getMetadataDesc(metadata) {
+		// CAUTION - maybe unfinished, work in progress.
+		//         - this was added as part of populating the <desc> of the <rte>
+		return metadata ? (xml.xml("h2", {}, "Metadata information:") + getAuthorHtml(metadata.name) + getNameHtml(metadata.name) + getLinkHtml(metadata.link)) : "";
+	}
+
 	// Construct a Gpx object from a string:
 	function Gpx(file, str) {
 		var parsed = gpxParse.parseXmlStr(str);
@@ -28,8 +94,10 @@ define( ["app/eventbus", "model/gpxParse", "model/point", "model/pointseq"], fun
 		var ptSeq;
 		var pts = null;
 		var newpts = null;
+		var desc = null;
 		if (parsed.trk) {
 			parsed.trk.forEach( function(trk) {
+				//console.log(trk.name);
 				// We want to merge <trkseg>s when the start of one trkseg matches the end of the previous trkseg.
 				// This deals with some poorly considered GPX files in which every pair of points is put into its own trkseg
 				// (silly, but I have seen examples) - this can mean thousands of PointSeq object which can overwhelm the UI.
@@ -50,7 +118,11 @@ define( ["app/eventbus", "model/gpxParse", "model/point", "model/pointseq"], fun
 						else {
 							// Both pts and newpts contain points, but newpts does not continue from the end of pts.
 							// Save what's already stored in pts:
-							pointSeqs.push(new pointseq.PointSeq(pointseq.typeEnum.gpx, file.name, {points: pts}));
+							// CAUTION - maybe unfinished, work in progress.
+							//         - this was added as part of populating the <desc> of the <rte>
+							desc = getMetadataDesc(parsed.metadata) + getTrkDesc(trk);
+							//console.log(desc);
+							pointSeqs.push(new pointseq.PointSeq(pointseq.typeEnum.gpx, file.name, desc, {points: pts}));
 							// Start gathering another sequence, 
 							pts = newpts;
 						}
@@ -61,13 +133,19 @@ define( ["app/eventbus", "model/gpxParse", "model/point", "model/pointseq"], fun
 				});
 				// The last sequence of points from continuing trksegs still needs to be saved:
 				if (pts.length > 0) {
-					pointSeqs.push(new pointseq.PointSeq(pointseq.typeEnum.gpx, file.name, {points: pts}));
+					// CAUTION - maybe unfinished, work in progress.
+					//         - this was added as part of populating the <desc> of the <rte>
+					desc = getMetadataDesc(parsed.metadata) + getTrkDesc(trk);
+					//console.log(desc);
+					pointSeqs.push(new pointseq.PointSeq(pointseq.typeEnum.gpx, file.name, desc, {points: pts}));
 				}
 			});
 		}
 		if (parsed.rte) {
 			parsed.rte.forEach( function(rte) {
-				ptSeq = new pointseq.PointSeq(pointseq.typeEnum.gpx, file.name, {
+				// TODO - if we're adding <desc> (to be used when outputing GPX) for <trk> input, then 
+				//      - we should do the same for this <rte> input.
+				ptSeq = new pointseq.PointSeq(pointseq.typeEnum.gpx, file.name, getDesc(rte), {
 					points: convertGpxWaypointsToModelPoints(rte.rtept)
 				});
 				pointSeqs.push(ptSeq);

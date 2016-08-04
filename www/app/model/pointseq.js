@@ -16,13 +16,14 @@ define( ["util/xml", "model/point", "model/lineSeg", "model/userdata", "model/mo
 	// PointSeq represents a sequence of waypoints defining a path.
 	// It may, for example, be created from GPX <rte> or <trk>/<trkseg>. 
 
-	var PointSeq = function(type, name, theSeq) {
+	var PointSeq = function(type, name, desc, theSeq) {
 		var cache = {
 			distance: null
 		};
 		Object.defineProperties(this, {
 			type: { value: type, enumerable: true },
 			name: { value: name, enumerable: true },
+			desc: { value: desc, enumerable: true },
 			points: {value: theSeq.points, enumerable: true },
 			id: {value: modelObjects.length, enumerable: true },
 			length: { value: theSeq.points.length, enumerable: true },
@@ -72,6 +73,8 @@ define( ["util/xml", "model/point", "model/lineSeg", "model/userdata", "model/mo
 						   creator: "https://github.com/gps-touring/js-app-src"
 					   },
 					   xml.xml("rte", {}, 
+							   xml.xml("name", {}, this.name) +
+							   xml.xml("desc", {}, "<![CDATA[" + this.desc + "]]>") +
 							   this.points.map(function(p) { 
 								   cummDist += lastPt ? lastPt.distanceTo(p) : 0;
 								   lastPt = p;
@@ -207,7 +210,7 @@ define( ["util/xml", "model/point", "model/lineSeg", "model/userdata", "model/mo
 			//return ptSeq.simplify(name + "_" + i++);
 			pts = simplify(ptSeq.points, allowedError);
 			pts = addMilestones(pts, milesoneDistance);
-			return new PointSeq(typeEnum.simplified, name + "_" + i++, {points: pts});
+			return new PointSeq(typeEnum.simplified, name + "_" + i++, ptSeq.desc, {points: pts});
 		});
 	}
 	PointSeq.prototype.isOfType = function(type, flag) {
