@@ -47,8 +47,7 @@ define( ["util/xml", "model/userdata"], function(xml, userdata) {
 		return this.milestone ? "cmt" : "";
 	};
 	Point.prototype.getSym = function() {
-		// We'd have prefered the icon "10" (milestone every 10km) to the warningflag, but it does not seem to work :-(
-		return this.milestone ? "warningflag" : "";
+		return this.milestone ? "10" : "";
 	};
 	Point.prototype.dump = function() {
 		return "lat: " + this.lat + ", lng: " + this.lng + ", ele: " + this.ele;

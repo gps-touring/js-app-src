@@ -7,8 +7,8 @@ define( ["jszip", "FileSaver", "model/pointseq"], function(JSZip, fs, ptSeqModel
 		// We are creating GPX files from 'simplified' PointSeq objects, which have been designed to
 		// be used for output:
 		ptSeqModel.getAllSimplified().forEach(function(ptSeq) {
-			console.log(ptSeq.name);
-			res.push({fileName: ptSeq.name + ".gpx", fileContent: ptSeq.toGpx()});
+			console.log("zipfile.compileRoutes: " + ptSeq.name);
+			res.push({fileName: ptSeq.fileName, fileContent: ptSeq.toGpx()});
 		});
 		return res;
 	}
@@ -23,9 +23,8 @@ define( ["jszip", "FileSaver", "model/pointseq"], function(JSZip, fs, ptSeqModel
 		// See https://stuk.github.io/jszip/documentation/examples.html
 		// See https://stuk.github.io/jszip/documentation/howto/write_zip.html
 		var zip = new JSZip();
+		zip.file("info.txt", "Created by gps-touring");
 		addToZip(zip, "routes/simplified/", compileRoutes());
-		zip.file("foo.txt", "foo\n");
-		zip.file("bar/foo.txt", "barfoo\n");
 		zip.generateAsync({type: "blob"})
 		.then(function (blob) {
 			var filename = "gps-touring-test.zip";

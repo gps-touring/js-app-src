@@ -16,13 +16,14 @@ define( ["util/xml", "model/point", "model/lineSeg", "model/userdata", "model/mo
 	// PointSeq represents a sequence of waypoints defining a path.
 	// It may, for example, be created from GPX <rte> or <trk>/<trkseg>. 
 
-	var PointSeq = function(type, name, desc, theSeq) {
+	var PointSeq = function(type, fileName, name, desc, theSeq) {
 		var cache = {
 			distance: null
 		};
 		Object.defineProperties(this, {
 			type: { value: type, enumerable: true },
 			name: { value: name, enumerable: true },
+			fileName: { value: fileName, enumerable: true },
 			desc: { value: desc, enumerable: true },
 			points: {value: theSeq.points, enumerable: true },
 			id: {value: modelObjects.length, enumerable: true },
@@ -53,15 +54,25 @@ define( ["util/xml", "model/point", "model/lineSeg", "model/userdata", "model/mo
 	PointSeq.prototype.clearSelections = mouseStates.clearSelections(modelObjects);
 	PointSeq.prototype.setHovered = mouseStates.setHovered(eventPrefix);
 
+	function totalDistance(pts) {
+		var i, len = pts.length;
+		var res = 0;
+		for (i = 1; i < len; ++i) {
+			res += pts[i - 1].distanceTo(pts[i]);
+		}
+		return res;
+	}
 	PointSeq.prototype.getDistance = function() {
+		return totalDistance(this.points);
+		/*
 		var pts = this.points;
 		var i, len = pts.length;
 		var res = 0;
 		for (i = 1; i < len; ++i) {
 			res += pts[i - 1].distanceTo(pts[i]);
 		}
-		//console.log("PointSeq.getDistance, " + len + " points, " + res + " metres");
 		return res;
+	   */
 	};
 	PointSeq.prototype.toGpx = function() {
 		var cummDist = 0;
@@ -73,8 +84,10 @@ define( ["util/xml", "model/point", "model/lineSeg", "model/userdata", "model/mo
 						   creator: "https://github.com/gps-touring/js-app-src"
 					   },
 					   xml.xml("rte", {}, 
-							   xml.xml("name", {}, this.name) +
-							   xml.xml("desc", {}, "<![CDATA[" + this.desc + "]]>") +
+							   xml.xml("name", {}, "<![CDATA[" + this.name + "]]>") +
+							// TODO Consider generating desc from original GPX
+							   xml.xml("desc", {}, "<![CDATA[" + this.name + "]]>") +
+							   //xml.xml("desc", {}, "<![CDATA[" + this.desc + "]]>") +
 							   this.points.map(function(p) { 
 								   cummDist += lastPt ? lastPt.distanceTo(p) : 0;
 								   lastPt = p;
@@ -201,17 +214,52 @@ define( ["util/xml", "model/point", "model/lineSeg", "model/userdata", "model/mo
 		}
 		return pts;
 	}
-	function createSimplified(name, ptSeqs) {
+	function splitIntoSections(originalPts, maxPointSeqLengthKm) {
+		var maxPointSeqLength = maxPointSeqLengthKm * 1000;
+		var len = totalDistance(originalPts);
+		var numSections = Math.floor(len / maxPointSeqLength) + 1;
+		var aveSectionLength = len / numSections;
+		var sections = [];	// Array of arrays of points
+
+		var pts = [];	// New sequence of points
+		var i = 0, j, d = 0;
+		var n = originalPts.length;
+		var lastPt = originalPts[i++];
+		for (j = 0; j < numSections; ++j) {
+			pts = [lastPt];
+			while (d < (j + 1) * aveSectionLength && ++i < n) {
+				d += lastPt.distanceTo(originalPts[i]);
+				lastPt = originalPts[i]
+				pts.push(lastPt);
+			}
+			sections.push(pts);
+		}
+		return sections;
+	}
+	function createSimplified(ptSeqs) {
+		var res = [];	// returns array of PointSes
 		var i = 0;
 		var allowedError = 5;	// metres
 		var milesoneDistance = 10;	// km
+		var maxPointSeqLength = 250;	// km
 		var pts;
-		return ptSeqs.map(function(ptSeq) { 
-			//return ptSeq.simplify(name + "_" + i++);
+		var sections;
+		var sectionName;
+		var fileName;
+		ptSeqs.forEach(function(ptSeq) { 
 			pts = simplify(ptSeq.points, allowedError);
 			pts = addMilestones(pts, milesoneDistance);
-			return new PointSeq(typeEnum.simplified, name + "_" + i++, ptSeq.desc, {points: pts});
+			sections = splitIntoSections(pts, maxPointSeqLength);
+			sections.forEach(function(sectionPts) {
+				i++;
+				sectionName = (ptSeqs.length === 1 && sections.length === 1) ? ptSeq.name : (ptSeq.name + " section " + i);
+				console.log(ptSeq.fileName);
+				console.log(ptSeq.fileName.replace(/\.gpx$/, ""));
+				fileName = (ptSeqs.length === 1 && sections.length === 1) ? ptSeq.fileName : (ptSeq.fileName.replace(/\.gpx$/, "") + "_" + i + ".gpx");
+				res.push(new PointSeq(typeEnum.simplified, fileName, sectionName, ptSeq.desc, {points: sectionPts}));
+			});
 		});
+		return res;
 	}
 	PointSeq.prototype.isOfType = function(type, flag) {
 		switch(type) {

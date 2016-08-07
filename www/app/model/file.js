@@ -15,7 +15,7 @@ define( ["model/userdata", "model/mouseStates", "app/eventbus"], function(userda
 		Object.defineProperties(this, {
 			source: { value: theSource, enumerable: true },
 			gpxObject: { value: gpxObject, enumerable: true },
-			simplifiedPtSeqs: { value: gpxObject.simplifyPtSeqs(theSource.name), enumerable: true },
+			simplifiedPtSeqs: { value: gpxObject.simplifyPtSeqs(), enumerable: true },
 			id: {value: modelObjects.length, enumerable: true },
 			// userdata: property created if setUserData is called.
 		});
