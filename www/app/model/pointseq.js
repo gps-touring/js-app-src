@@ -1,4 +1,4 @@
-define( ["util/xml", "model/point", "model/lineSeg", "model/userdata", "model/mouseStates", "model/state", "app/eventbus"], function(xml, point, lineSeg, userdata, mouseStates, state, eventbus) {
+define( ["util/xml", "model/point", "model/lineseg", "model/userdata", "model/mouseStates", "model/state", "app/eventbus"], function(xml, point, lineSeg, userdata, mouseStates, state, eventbus) {
 	"use strict";
 
 	var eventPrefix = "PointSeq";
