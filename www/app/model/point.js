@@ -97,7 +97,10 @@ define( ["util/xml", "model/userdata"], function(xml, userdata) {
 	};
 	Point.prototype.rteptXml = function(cummDist) {
 		var name = this.getName();
-		if (name.length === 0) name = metresToKmString(cummDist);
+		// If we put a name in for each point, then we get an icon displayed by ViewRanger for each point
+		// and this is messy when displayed on the phone.
+		// Therefore commenting out this:
+		//if (name.length === 0) name = metresToKmString(cummDist);
 		return xmlEle("name", name) +
 			xmlEle("sym", this.getSym()) +
 			//xmlEle("cmt", this.getCmt()) +

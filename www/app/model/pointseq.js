@@ -239,7 +239,7 @@ define( ["util/xml", "model/point", "model/lineseg", "model/userdata", "model/mo
 	function createSimplified(ptSeqs) {
 		var res = [];	// returns array of PointSes
 		var i = 0;
-		var allowedError = 5;	// metres
+		var allowedError = 9;	// metres
 		var milesoneDistance = 10;	// km
 		var maxPointSeqLength = 250;	// km
 		var pts;
